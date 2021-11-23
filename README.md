@@ -1,1 +1,1 @@
-# 2109-wns-lyon-the5chickpeas-back
+# run npx create-nodejs-express-app back-the5chickpeas to create project skeleton
