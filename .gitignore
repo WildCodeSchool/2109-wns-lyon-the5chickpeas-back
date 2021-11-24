@@ -1,1 +1,4 @@
 .env
+node_modules
+ormconfig.json
+database.sqlite

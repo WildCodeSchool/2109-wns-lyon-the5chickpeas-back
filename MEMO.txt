@@ -1,5 +1,7 @@
-- TypeORM + SQL + GraphQL
+- TypeORM + SqlLite + GraphQL
 - Nodejs + express
+
+SqlLite = permet d'avoir un fichier commun au projet pour la base de donnée et évite que chacun ait à installer une BD locale sur son poste
 
 1 - Run npm init to generate package.json file
 2 - Run tsc --init to generate tsconfig.json file
@@ -7,8 +9,22 @@
 4 - Run npm install @types/cors @types/express @types/node
 5 - Run npm install typeorm mysql mysql2 graphql express-graphql dotenv
 6 - Run npm install -g maildev (to run) && maildev
+7 - Run npm install type-graphql
+8 - Run npm install argon2 
+9 - Run npm install reflect-metadata --save
+10 - Run npm install sqlite3 apollo-server
 
 Run `npm run dev` and go at localhost:PORT_NUMBER
 
 Queries = read
 Mutations = create, update and delete
+
+API Graphql (dif. API REST) permet de dire comment un client va dialoguer avec un serveur.
+Resolvers ~= Controllers
+Apollo Server = mise à dispotion d'une API
+Authentification Stateless => on passe par du JWT
+
+Protege une route par une fonctions = middleware
+
+
+
