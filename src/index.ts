@@ -7,6 +7,10 @@ import { graphqlHTTP } from 'express-graphql';
 import cors from 'cors';
 import { createConnection } from 'typeorm';
 import dotenv from 'dotenv';
+import { buildSchema } from 'type-graphql';
+import { UsersResolver } from './resolvers/User';
+import 'reflect-metadata';
+import { ApolloServer } from "apollo-server";
 
 
 /**
@@ -14,22 +18,19 @@ import dotenv from 'dotenv';
  */
 
 const main = async () => {
-    
-    await createConnection({
-        type: "mysql",
-        database: process.env.MYSQL_DATABASE,
-        username: process.env.MYSQL_USERNAME,
-        password: process.env.MYSQL_PASSWORD,
-        logging: true, // Display logs
-        synchronize: false,
-        entities: []
+
+    // Initialise connection
+    await createConnection();
+
+    //const app = express();
+
+    const schema = await buildSchema({
+        resolvers: [UsersResolver],
     });
 
-    const app = express();
-
-    app.use(express.urlencoded({ extended: false }));
-    app.use(cors()); // Allow connection with front end + apply graphql middleware
-    app.use(express.json()); // Parse all HTTP request  in json
+    // app.use(express.urlencoded({ extended: false }));
+    // app.use(cors()); // Allow connection with front end + apply graphql middleware
+    // app.use(express.json()); // Parse all HTTP request  in json
 
     // Middlewares 
     /*app.use("/graphql", graphqlHTTP({
@@ -37,9 +38,15 @@ const main = async () => {
         graphiql: true
     }));*/
 
-    app.listen(3001, () => {
-        console.log("Server running...");
-    })
+   // Create the GraphQL server
+   const server = new ApolloServer({
+    schema,
+    });
+
+    // Start the server
+    const { url } = await server.listen(3001);
+    console.log(`Server is running, GraphQL Playground available at ${url}`);
+
 
 }
 
