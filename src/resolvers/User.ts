@@ -13,19 +13,31 @@ export class UsersResolver {
   }
 
   // Update user
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => User)
   async updateUser(
+    @Arg("id", () => ID) id: number,
     @Arg("email") email: string,
     @Arg("password") password: string
   ): Promise<User | null> {
-    // TODO
-    return null;
+    const user = await this.userRepo.findOne({ id });
+    if (user) {
+      if (user.email) {
+        user.email = email;
+      }
+      if (user.password) {
+        user.password = await argon2.hash(password);
+      }
+      await user.save();
+      return user;
+    } else {
+      return null;
+    }
   }
 
   // Delete user
-  @Mutation(() => User)
+  @Mutation(() => Boolean)
   async deleteUser(@Arg("id", () => ID) id: number): Promise<Boolean> {
-    const user = await this.userRepo.findOne({ id });
+    const user = await this.userRepo.findOne(id);
     if (user) {
       await user.remove();
       return true;
