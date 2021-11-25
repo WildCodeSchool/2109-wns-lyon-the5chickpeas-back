@@ -14,7 +14,7 @@ export class Role extends BaseEntity {
 }
 
 @InputType()
-export class UserInput {
+export class RoleInput {
   @Field()
   name!: string;
 }

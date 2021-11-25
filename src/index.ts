@@ -9,6 +9,7 @@ import { createConnection } from "typeorm";
 import dotenv from "dotenv";
 import { buildSchema } from "type-graphql";
 import { UsersResolver } from "./resolvers/User";
+import { RolesResolver } from "./resolvers/Role";
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
 
@@ -23,7 +24,7 @@ const main = async () => {
   //const app = express();
 
   const schema = await buildSchema({
-    resolvers: [UsersResolver],
+    resolvers: [UsersResolver, RolesResolver],
   });
 
   // app.use(express.urlencoded({ extended: false }));
