@@ -1,27 +1,34 @@
-import { Field, ID, InputType, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Field, ID, InputType, ObjectType } from "type-graphql";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @ObjectType() // Decorateur type-graphql
 @Entity() // Decorateur typeorm
 export class User extends BaseEntity {
-    @Field(() => ID)
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @Field(() => ID)
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Field()
-    @Column()
-    email!: string;
+  @Field()
+  @Column()
+  email!: string;
 
-    @Field()
-    @Column()
-    password!: string;
+  @Field()
+  @Column()
+  password!: string;
+
+  @Field()
+  @Column()
+  pseudo!: string;
 }
 
 @InputType()
 export class UserInput {
-    @Field()
-    email!: string;
+  @Field()
+  email!: string;
 
-    @Field()
-    password!: string;
+  @Field()
+  password!: string;
+
+  @Field()
+  pseudo!: string;
 }

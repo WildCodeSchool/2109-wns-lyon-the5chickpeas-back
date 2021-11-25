@@ -17,16 +17,12 @@ export class UsersResolver {
   async updateUser(
     @Arg("id", () => ID) id: number,
     @Arg("email") email: string,
-    @Arg("password") password: string
+    @Arg("password") password: string,
+    @Arg("pseudo") pseudo: string
   ): Promise<User | null> {
-    const user = await this.userRepo.findOne({ id });
+    const user = await this.userRepo.findOne(id);
     if (user) {
-      if (user.email) {
-        user.email = email;
-      }
-      if (user.password) {
-        user.password = await argon2.hash(password);
-      }
+      Object.assign(user, { email, password: argon2.hash(password), pseudo });
       await user.save();
       return user;
     } else {
@@ -49,7 +45,8 @@ export class UsersResolver {
   @Mutation(() => User)
   async signup(
     @Arg("email") email: string,
-    @Arg("password") password: string
+    @Arg("password") password: string,
+    @Arg("pseudo") pseudo: string
   ): Promise<User> {
     // Check if a user exists with this email
     const user = await this.userRepo.findOne({ email });
@@ -61,6 +58,7 @@ export class UsersResolver {
     const newUser = this.userRepo.create({
       email,
       password: await argon2.hash(password),
+      pseudo,
     });
     await newUser.save();
     return newUser;
