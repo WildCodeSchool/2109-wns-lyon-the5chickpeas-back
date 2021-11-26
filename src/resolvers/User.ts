@@ -50,19 +50,34 @@ export class UsersResolver {
         return await this.userRepo.find();
     }
 
-    // Update user
-    @Mutation(() => User, { nullable: true })
-    async updateUser(@Arg('email') email: string, @Arg('password') password: string): Promise<User | null> {
-        // TODO    
-        return null;
+  // update user
+  @Mutation(() => User)
+  async updateUser(
+    @Arg("id", () => ID) id: number,
+    @Arg("email") email: string,
+    @Arg("password") password: string,
+    @Arg("pseudo") pseudo: string
+  ): Promise<User | null> {
+    const user = await this.userRepo.findOne(id);
+    if (user) {
+      Object.assign(user, { email, password: argon2.hash(password), pseudo });
+      await user.save();
+      return user;
+    } else {
+      return null;
     }
+  }
 
-    // Delete user
-    @Mutation(() => User, { nullable: true })
-    async deleteUser(@Arg('email') email: string, @Arg('password') password: string): Promise<User | null> {
-        // TODO    
-        return null;
+  // Delete user
+  @Mutation(() => Boolean)
+  async deleteUser(@Arg("id", () => ID) id: number): Promise<Boolean> {
+    const user = await this.userRepo.findOne(id);
+    if (user) {
+      await user.remove();
+      return true;
     }
+    return false;
+  }
 
     // Non-existing user
     @Mutation(() => User)
@@ -109,3 +124,4 @@ export class UsersResolver {
         }
     }
 }
+
