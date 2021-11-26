@@ -1,5 +1,12 @@
 import { Field, ID, InputType, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+} from "typeorm";
+import { Role } from "./Role";
 
 @ObjectType() // Decorateur type-graphql
 @Entity() // Decorateur typeorm
@@ -12,13 +19,16 @@ export class User extends BaseEntity {
   @Column()
   email!: string;
 
-  @Field()
   @Column()
   password!: string;
 
   @Field()
   @Column()
   pseudo!: string;
+
+  @Field(() => [Role])
+  @ManyToMany((type) => Role, (role) => role.users)
+  roles!: Role[];
 }
 
 @InputType()

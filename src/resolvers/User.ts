@@ -2,14 +2,16 @@ import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
 import { User } from "../models/User";
 import * as argon2 from "argon2";
+import { Role } from "../models/Role";
 
 @Resolver(User)
 export class UsersResolver {
   private userRepo = getRepository(User);
+  private roleRepo = getRepository(Role);
 
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
-    return await this.userRepo.find();
+    return await this.userRepo.find({ relations: ["roles"] });
   }
 
   // update user
@@ -52,6 +54,13 @@ export class UsersResolver {
     const user = await this.userRepo.findOne({ email });
     if (user) throw new Error("A user already exists with this email"); // Faire la traduction 'Un utilisateur existe déjà avec cet adresse email !'
 
+    let role = await this.roleRepo.findOne({ name: "ROLE_USER" });
+    if (!role) {
+      const newRole = this.roleRepo.create({ name: "ROLE_USER" });
+      newRole.save();
+      role = newRole;
+    }
+
     // TODO : Generate JWT Token
 
     // Save in DB
@@ -59,6 +68,7 @@ export class UsersResolver {
       email,
       password: await argon2.hash(password),
       pseudo,
+      roles: [role],
     });
     await newUser.save();
     return newUser;
