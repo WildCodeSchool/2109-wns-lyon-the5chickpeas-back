@@ -8,28 +8,37 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Field()
-  @Column()
-  email!: string;
+    @Field()
+    @Column()
+    pseudo!: string;
 
-  @Field()
-  @Column()
-  password!: string;
+    @Field()
+    @Column()
+    email!: string;
 
-  @Field()
-  @Column()
-  pseudo!: string;
+    @Field()
+    @Column()
+    password!: string;
+
+    @Field({ nullable: true })
+    @Column({
+        nullable: true,
+    })
+    validAccountToken!: string;
 }
 
 @InputType()
 export class UserInput {
-  @Field()
-  email!: string;
 
-  @Field()
-  password!: string;
+    @Field()
+    pseudo!: string;
+    
+    @Field()
+    email!: string;
 
-  @Field()
-  @Column()
-  pseudo!: string;
+    @Field()
+    password!: string;
+
+    @Field({ nullable: true })
+    validAccountToken!: string;
 }
