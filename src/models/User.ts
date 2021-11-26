@@ -19,27 +19,35 @@ export class User extends BaseEntity {
   @Column()
   email!: string;
 
-  @Column()
-  password!: string;
-
   @Field()
   @Column()
   pseudo!: string;
 
+  @Column()
+  password!: string;
+
   @Field(() => [Role])
   @ManyToMany((type) => Role, (role) => role.users)
   roles!: Role[];
+
+  @Field({ nullable: true })
+  @Column({
+    nullable: true,
+  })
+  validAccountToken!: string;
 }
 
 @InputType()
 export class UserInput {
+  @Field()
+  pseudo!: string;
+
   @Field()
   email!: string;
 
   @Field()
   password!: string;
 
-  @Field()
-  @Column()
-  pseudo!: string;
+  @Field({ nullable: true })
+  validAccountToken!: string;
 }
