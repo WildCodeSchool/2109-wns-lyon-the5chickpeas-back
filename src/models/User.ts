@@ -1,5 +1,12 @@
 import { Field, ID, InputType, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+} from "typeorm";
+import { Role } from "./Role";
 
 @ObjectType() // Decorateur type-graphql
 @Entity() // Decorateur typeorm
@@ -8,37 +15,40 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-    @Field()
-    @Column()
-    pseudo!: string;
+  @Field()
+  @Column()
+  email!: string;
 
-    @Field()
-    @Column()
-    email!: string;
+  @Field()
+  @Column()
+  pseudo!: string;
 
-    @Field()
-    @Column()
-    password!: string;
+  @Column()
+  @Field()
+  password!: string;
 
-    @Field({ nullable: true })
-    @Column({
-        nullable: true,
-    })
-    validAccountToken!: string;
+  @Field(() => [Role])
+  @ManyToMany((type) => Role, (role) => role.users)
+  roles!: Role[];
+
+  @Field({ nullable: true })
+  @Column({
+    nullable: true,
+  })
+  validAccountToken!: string;
 }
 
 @InputType()
 export class UserInput {
+  @Field()
+  pseudo!: string;
 
-    @Field()
-    pseudo!: string;
-    
-    @Field()
-    email!: string;
+  @Field()
+  email!: string;
 
-    @Field()
-    password!: string;
+  @Field()
+  password!: string;
 
-    @Field({ nullable: true })
-    validAccountToken!: string;
+  @Field({ nullable: true })
+  validAccountToken!: string;
 }

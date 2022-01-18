@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "docker": "docker-compose -f docker-compose.dev.yml up --build",
     "start": "node ./dist/index.ts",
     "dev": "nodemon ./src/index.ts",
     "build": "tsc -p .",
