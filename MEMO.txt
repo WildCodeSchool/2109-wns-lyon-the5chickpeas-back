@@ -13,6 +13,7 @@ SqlLite = permet d'avoir un fichier commun au projet pour la base de donnée et 
 8 - Run npm install argon2 
 9 - Run npm install reflect-metadata --save
 10 - Run npm install sqlite3 apollo-server maildev nodemailer jsonwebtoken
+11 - Run npm install mysql
 
 Run `npm run dev` and go at localhost:PORT_NUMBER
 

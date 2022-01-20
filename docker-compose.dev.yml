@@ -19,9 +19,7 @@ services:
       # restart: always
       environment:
         MYSQL_DATABASE: 'chickpeas_db'
-        # MYSQL_USER: 'root'
-        MYSQL_PASSWORD: 'MercuryMysql2021.'
-        # MYSQL_ROOT_PASSWORD: 'MercuryMysql2021.'
+        MYSQL_ROOT_PASSWORD: 'MercuryMysql2021.'
       ports:
         - '3306:3306'
       #expose: #Pas utile pour nous actuellement
