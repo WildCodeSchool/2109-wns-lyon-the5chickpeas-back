@@ -18,14 +18,29 @@ import { ApolloServer } from "apollo-server";
  */
 
 const main = async () => {
-  // Initialise connection
-  await createConnection();
+  
+  createConnection({
+    type: "mysql",
+    host: "db",
+    port: 3306,
+    username: "root",
+    password: "MercuryMysql2021.",
+    database: "chickpeas_db",
+    entities: [
+      __dirname + "/models/*.ts"
+    ],
+    synchronize: true,
+    logging: false
+  }).then(async connection => {
 
-  //const app = express();
+    // Code...
+    console.log('tu es un bon...');
+    
+  }).catch(error => console.log(error));
 
-  const schema = await buildSchema({
-    resolvers: [UsersResolver, RolesResolver],
-  });
+    const schema = await buildSchema({
+      resolvers: [UsersResolver, RolesResolver],
+  }); 
 
   // app.use(express.urlencoded({ extended: false }));
   // app.use(cors()); // Allow connection with front end + apply graphql middleware
@@ -43,7 +58,7 @@ const main = async () => {
   });
 
   // Start the server
-  const { url } = await server.listen(3001);
+  const { url } = await server.listen(process.env.port || 3000);
   console.log(`Server is running, GraphQL Playground available at ${url}`);
 };
 

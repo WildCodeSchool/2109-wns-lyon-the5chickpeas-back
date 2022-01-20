@@ -100,7 +100,7 @@ export class UsersResolver {
 
     // Generate token
     const token = jwt.sign({ user: "newUser" }, `${email}`, {
-      expiresIn: "120s",
+      expiresIn: "600s",
     });
 
     // Save in DB
@@ -138,8 +138,7 @@ export class UsersResolver {
         } catch (error) {
             return 'Expired token...'
         }
-
-        
+  
         return 'Account not validated yet...';
     }
 
