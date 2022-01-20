@@ -1,0 +1,11 @@
+version: '3'
+services:
+    server:
+        build: .
+        ports:
+          - 3002:3001 # ordinateur:conteneur docker, port conteneur docker == port dans fichier index
+        command: npm run dev
+        volumes:
+          - ./src/:/app/src/
+    mongodb: # <=> docker run -d --name mongodb mongo
+        image: mongo
