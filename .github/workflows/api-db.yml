@@ -8,4 +8,4 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
     - name: install dependances
-      run: npm i
+      run: npm i && npm run test

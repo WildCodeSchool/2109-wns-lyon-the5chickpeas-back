@@ -14,6 +14,7 @@ SqlLite = permet d'avoir un fichier commun au projet pour la base de donnée et 
 9 - Run npm install reflect-metadata --save
 10 - Run npm install sqlite3 apollo-server maildev nodemailer jsonwebtoken
 11 - Run npm install mysql
+12 - Run npm install --save-dev jest
 
 Run `npm run dev` and go at localhost:PORT_NUMBER
 
@@ -26,6 +27,8 @@ Apollo Server = mise à dispotion d'une API
 Authentification Stateless => on passe par du JWT
 
 Protege une route par une fonctions = middleware
+
+Si erreur : snap_update =>  sudo rm -rf /etc/docker && sudo snap refresh
 
 
 

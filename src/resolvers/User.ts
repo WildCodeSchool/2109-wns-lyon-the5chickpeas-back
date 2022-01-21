@@ -9,6 +9,7 @@ import { Role } from "../models/Role";
 
 @Resolver(User)
 export class UsersResolver {
+  
   private userRepo = getRepository(User);
   private roleRepo = getRepository(Role);
 
