@@ -1,11 +1,13 @@
 name: api-db-workflow
 
-on: pull_request
+on: 
+  pull_request
 
 jobs:
-  docker: ubuntu-latest
-  steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    - name: install dependances
-      run: npm i && npm run test
+  docker: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: install dependances
+        run: npm i && npm run test
