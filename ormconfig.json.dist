@@ -3,7 +3,7 @@
   "host": "db",
   "port": 3306,
   "username": "root",
-  "password": "!",
+  "password": "",
   "database": "chickpeas_db",
   "synchronize": true,
   "logging": true,
