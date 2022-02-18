@@ -1,5 +1,9 @@
 version: '3'
 services:
+    maildev:
+        image: maildev/maildev
+        ports:
+          - 1025:25
     server:
         build: .
         ports:
@@ -8,19 +12,20 @@ services:
         volumes: #chemin
           - ./src/:/app/src/
         depends_on:
-          - db
+          db:
+            condition: service_healthy
     db:
       #container_name: toto
       image: mysql
-      # cap_add:
-      #   - SYS_NICE
+      cap_add:
+        - SYS_NICE
       command: mysqld --default-authentication-plugin=mysql_native_password
       # restart: always
       environment:
         MYSQL_DATABASE: 'chickpeas_db'
-        MYSQL_ROOT_PASSWORD: 'MercuryMysql2021.'
-      # ports:
-      #   - '3306:3306'
+        MYSQL_ROOT_PASSWORD: 'Wild2022!'
+      ports:
+        - 3306:3306
       #expose: #Pas utile pour nous actuellement
       #- '3306'
       volumes: #anonyme (sans :) // #nommé => delegue a docker pour pouvoir retrouver les données après

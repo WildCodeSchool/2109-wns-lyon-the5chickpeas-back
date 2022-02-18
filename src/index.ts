@@ -18,29 +18,26 @@ import { ApolloServer } from "apollo-server";
  */
 
 const main = async () => {
-  
   createConnection({
     type: "mysql",
     host: "db",
     port: 3306,
     username: "root",
-    password: "MercuryMysql2021.",
+    password: "Wild2022!",
     database: "chickpeas_db",
-    entities: [
-      __dirname + "/models/*.ts"
-    ],
+    entities: [__dirname + "/models/*.ts"],
     synchronize: true,
-    logging: false
-  }).then(async connection => {
+    logging: false,
+  })
+    .then(async (connection) => {
+      // Code...
+      console.log("tu es un bon...");
+    })
+    .catch((error) => console.log(error));
 
-    // Code...
-    console.log('tu es un bon...');
-    
-  }).catch(error => console.log(error));
-
-    const schema = await buildSchema({
-      resolvers: [UsersResolver, RolesResolver],
-  }); 
+  const schema = await buildSchema({
+    resolvers: [UsersResolver, RolesResolver],
+  });
 
   // app.use(express.urlencoded({ extended: false }));
   // app.use(cors()); // Allow connection with front end + apply graphql middleware
