@@ -9,7 +9,6 @@ import { Role } from "../models/Role";
 
 @Resolver(User)
 export class UsersResolver {
-  
   private userRepo = getRepository(User);
   private roleRepo = getRepository(Role);
 
@@ -129,20 +128,20 @@ export class UsersResolver {
     const user = await this.userRepo.findOne({ email });
 
     if (user) {
+      if (user.validAccountToken === "") {
+        return "Connected...";
+      }
 
-        if(user.validAccountToken === ''){
-            return 'Connected...';
-        }
+      try {
+        const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
+        console.log("it works");
+      } catch (error) {
+        return "Expired token...";
+      }
 
-        try {
-            const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
-        } catch (error) {
-            return 'Expired token...'
-        }
-  
-        return 'Account not validated yet...';
+      return "Account not validated yet...";
     }
 
-    return 'No user found for those credentials'; 
+    return "No user found for those credentials";
   }
 }

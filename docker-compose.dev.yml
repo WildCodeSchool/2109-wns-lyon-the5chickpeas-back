@@ -9,6 +9,8 @@ services:
         ports:
           - 3002:3000 # ordinateur:conteneur docker, port conteneur docker == port dans fichier index
         command: npm run dev
+        env_file: 
+          - .env
         volumes: #chemin
           - ./src/:/app/src/
         depends_on:
@@ -22,8 +24,8 @@ services:
       command: mysqld --default-authentication-plugin=mysql_native_password
       # restart: always
       environment:
-        MYSQL_DATABASE: 'chickpeas_db'
-        MYSQL_ROOT_PASSWORD: 'Wild2022!'
+        MYSQL_DATABASE: chickpeas_db
+        MYSQL_ROOT_PASSWORD: Wild2022!
       ports:
         - 3306:3306
       #expose: #Pas utile pour nous actuellement

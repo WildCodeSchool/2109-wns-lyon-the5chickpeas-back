@@ -1,12 +1,10 @@
 /**
  * Import from installed packages
  */
-//require('dotenv').config();
 import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import cors from "cors";
 import { createConnection } from "typeorm";
-import dotenv from "dotenv";
 import { buildSchema } from "type-graphql";
 import { UsersResolver } from "./resolvers/User";
 import { RolesResolver } from "./resolvers/Role";
@@ -22,9 +20,9 @@ const main = async () => {
     type: "mysql",
     host: "db",
     port: 3306,
-    username: "root",
-    password: "Wild2022!",
-    database: "chickpeas_db",
+    username: process.env.MYSQL_USERNAME,
+    password: process.env.MYSQL_ROOT_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
     entities: [__dirname + "/models/*.ts"],
     synchronize: true,
     logging: false,
