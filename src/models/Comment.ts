@@ -6,9 +6,12 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   CreateDateColumn,
+  OneToMany,
 } from "typeorm";
 import { Task } from "./Task";
 import { User } from "./User";
+import { Notification } from "./Notification";
+
 
 @ObjectType()
 @Entity()
@@ -30,6 +33,10 @@ export class Comment extends BaseEntity {
 
   @ManyToOne((type) => User, (user) => user.comments)
   user!: User;
+
+  @OneToMany((type) => Notification, (notification) => notification.comment)
+  notifications?: Notification[];
+  
 }
 
 @InputType()

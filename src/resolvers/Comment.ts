@@ -20,7 +20,7 @@ export class CommentResolver {
         return newComment;
     }
 
-    // delete delete
+    // delete comment
     @Mutation(() => Boolean)
     async deleteComment(@Arg("id", () => ID) id: number): Promise<Boolean> {
         const comment = await this.commentRepo.findOne(id);
@@ -29,5 +29,23 @@ export class CommentResolver {
             return true;
         }
         return false;
+    }
+
+    // update comment
+    @Mutation(() => Comment)
+    async updateComment(
+        @Arg("id", () => ID) id: number,
+        @Arg("description") description: string
+    ): Promise<Comment | null> {
+        const comment = await this.commentRepo.findOne({ id });
+        if (comment) {
+            if (comment.description) {
+                comment.description = description;
+            }
+            await comment.save();
+            return comment;
+        } else {
+            return null;
+        }
     }
 }

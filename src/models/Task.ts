@@ -12,6 +12,7 @@ import {
 import { Asset } from "./Asset";
 import { Comment } from "./Comment";
 import { User } from "./User";
+import { Notification } from "./Notification";
 
 @ObjectType()
 @Entity()
@@ -61,6 +62,9 @@ export class Task extends BaseEntity {
 
   @OneToMany((type) => Asset, (asset) => asset.task)
   assets!: Asset[];
+
+  @OneToMany((type) => Notification, (notification) => notification.task)
+  notifications?: Notification[];
 }
 
 @InputType()
