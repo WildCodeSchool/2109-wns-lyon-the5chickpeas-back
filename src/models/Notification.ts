@@ -22,18 +22,18 @@ export class Notification extends BaseEntity {
   name!: string;
 
   //One notif can be linked to one user
-  @Field()
-  @ManyToOne(() => User, (user) => user.notifications)
+  @Field(() => User)
+  @ManyToOne((type) => User, (user) => user.notifications)
   user?: User;
 
   //One notif can be linked to one task
-  @Field()
-  @ManyToOne(() => Task, (task) => task.notifications)
+  @Field(() => Task)
+  @ManyToOne((type) => Task, (task) => task.notifications)
   task?: Task;
 
   //One notif can be linked to one comment
-  @Field()
-  @ManyToOne(() => Comment, (comment) => comment.notifications)
+  @Field(() => Comment)
+  @ManyToOne((type) => Comment, (comment) => comment.notifications)
   comment?: Comment;
 }
 

@@ -42,12 +42,15 @@ export class User extends BaseEntity {
   })
   validAccountToken!: string;
 
-  @OneToMany(() => Notification, (notification) => notification.user)
+  @Field(() => [Notification])
+  @OneToMany((type) => Notification, (notification) => notification.user)
   notifications?: Notification[];
 
+  @Field(() => [Comment])
   @OneToMany((type) => Comment, (comment) => comment.user)
   comments!: Comment[];
 
+  @Field(() => [Task])
   @ManyToMany((type) => Task, (task) => task.users)
   tasks?: Task[];
 }

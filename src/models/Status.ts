@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Project } from "./Project";
+import { Task } from "./Task";
 
 @ObjectType()
 @Entity()
@@ -21,12 +22,12 @@ export class Status extends BaseEntity {
 
   //One status can have several projects
   @Field(() => [Project])
-  @OneToMany(() => Project, (project) => project.status) // an project has one status
+  @OneToMany((type) => Project, (project) => project.status) // an project has one status
   projects?: Project[];
 
   //One status can have several tasks
   @Field(() => [Task])
-  @OneToMany(() => Task, (task) => task.status) // an project has one status
+  @OneToMany((type) => Task, (task) => task.status) // an project has one status
   tasks?: Task[];
 }
 

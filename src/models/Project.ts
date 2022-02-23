@@ -39,24 +39,24 @@ export class Project extends BaseEntity {
 
   @Field({ nullable: true })
   @Column()
-  initialTimeEstimee?: number;
+  estimatedTime?: number;
 
-  @Field()
-  @ManyToOne(() => Status, (status) => status.projects) // an project has one status
+  @Field(() => Status)
+  @ManyToOne((type) => Status, (status) => status.projects) // an project has one status
   status!: Status;
 
   @Field(() => [Task])
-  @OneToMany(() => Task, (task) => task.project) // an project has several tasks
+  @OneToMany((type) => Task, (task) => task.project) // an project has several tasks
   tasks?: Task[];
 
   //one project has several managers
   @Field(() => [Manager])
-  @ManyToMany(() => Manager, (manager) => manager.projects)
+  @ManyToMany((type) => Manager, (manager) => manager.projects)
   managers?: Manager[];
 
   //one project can have serveral collaborators
   @Field(() => [Member])
-  @ManyToMany(() => Member, (member) => member.projects)
+  @ManyToMany((type) => Member, (member) => member.projects)
   members?: Member[];
 }
 
@@ -80,5 +80,5 @@ export class ProjectInput {
 
   @Field({ nullable: true })
   @Column()
-  initialTimeEstimee?: number;
+  estimatedTime?: number;
 }

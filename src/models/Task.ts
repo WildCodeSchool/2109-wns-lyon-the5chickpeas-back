@@ -53,7 +53,7 @@ export class Task extends BaseEntity {
   @JoinTable()
   users?: User[];
 
-  @ManyToOne(() => Project, (project) => project.tasks)
+  @ManyToOne((type) => Project, (project) => project.tasks)
   project!: Project;
 
   @ManyToOne(() => Status, (status) => status.tasks)

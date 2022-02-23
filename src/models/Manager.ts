@@ -23,8 +23,8 @@ export class Manager extends BaseEntity {
   @JoinTable()
   projects?: Project[];
 
-  @Field() //to get all properties of the User
-  @OneToOne(() => User)
+  @Field(() => User) //to get all properties of the User
+  @OneToOne((type) => User)
   @JoinColumn()
   user!: User;
 }

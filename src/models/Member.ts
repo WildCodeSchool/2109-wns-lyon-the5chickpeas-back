@@ -24,8 +24,8 @@ export class Member extends BaseEntity {
   projects?: Project[];
 
   //to get all properties of the User
-  @Field()
-  @OneToOne(() => User)
+  @Field(() => User)
+  @OneToOne((type) => User)
   @JoinColumn()
   user!: User;
 }
