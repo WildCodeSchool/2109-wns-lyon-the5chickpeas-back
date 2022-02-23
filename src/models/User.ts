@@ -1,3 +1,4 @@
+import { type } from "os";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -7,9 +8,10 @@ import {
   ManyToMany,
   OneToMany,
 } from "typeorm";
+import { Comment } from "./Comment";
 import { Role } from "./Role";
 import { Notification } from "./Notification";
-//import { Project } from "./Project";
+import { Task } from "./Task";
 
 @ObjectType() // Decorateur type-graphql
 @Entity() // Decorateur typeorm permet de créer la base de données
@@ -40,14 +42,14 @@ export class User extends BaseEntity {
   })
   validAccountToken!: string;
 
-  // @ManyToMany((type) => Project, (project) => project.users, {
-  //   cascade: true,
-  // })
-  // @JoinTable()
-  // projects!: Project[];
-
   @OneToMany(() => Notification, (notification) => notification.user)
   notifications?: Notification[];
+
+  @OneToMany((type) => Comment, (comment) => comment.user)
+  comments!: Comment[];
+
+  @ManyToMany((type) => Task, (task) => task.users)
+  tasks?: Task[];
 }
 
 @InputType()
