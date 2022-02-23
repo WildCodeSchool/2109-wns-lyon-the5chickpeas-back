@@ -12,6 +12,7 @@ import {
 import { Status } from "./Status";
 import { Manager } from "./Manager";
 import { Member } from "./Member";
+import { Task } from "./Task";
 
 @ObjectType() //graphql
 @Entity() //ORM

@@ -29,18 +29,3 @@ export class Member extends BaseEntity {
   @JoinColumn()
   user!: User;
 }
-
-@InputType()
-//when I create a member, I need it to be linked to a user & a project
-export class MemberInput {
-  @Field(() => [Project])
-  @ManyToMany((type) => Project, (project) => project.members)
-  @JoinTable()
-  projects?: Project[];
-
-  //to get all properties of the User
-  @Field()
-  @OneToOne(() => User)
-  @JoinColumn()
-  user!: User;
-}

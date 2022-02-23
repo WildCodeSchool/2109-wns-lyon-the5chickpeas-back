@@ -28,18 +28,3 @@ export class Manager extends BaseEntity {
   @JoinColumn()
   user!: User;
 }
-
-@InputType()
-//when I create a manager, I need it to be linked to a user & a project
-export class ManagerInput {
-  @Field((type) => [Project])
-  @ManyToMany((type) => Project, (project) => project.managers)
-  @JoinTable()
-  projects?: Project[];
-
-  //to get all properties of the User
-  @Field()
-  @OneToOne(() => User)
-  @JoinColumn()
-  user!: User;
-}
