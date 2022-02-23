@@ -1,13 +1,15 @@
 import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository, createQueryBuilder } from "typeorm";
 import { Project, ProjectInput } from "../models/Project";
-import { Task } from "../models/Task";
-import { Member } from "../models/Member";
+import { Task, TaskInput } from "../models/Task";
 import { Manager } from "../models/Manager";
+import { User } from "../models/User";
+import { Member } from "../models/Member";
 
 @Resolver(Project)
-export class ProjectResolver {
+export class ProjectsResolver {
   private projectRepo = getRepository(Project);
+  private userRepo = getRepository(User);
 
   @Query(() => [Project])
   async getProjects(): Promise<Project[]> {
@@ -25,12 +27,20 @@ export class ProjectResolver {
   // create project
   @Mutation(() => Project)
   async addProject(
-    @Arg("data", () => ProjectInput) project: ProjectInput
+    @Arg("data", () => ProjectInput) project: ProjectInput,
+    @Arg("id", () => ID) id: number,
   ): Promise<Project> {
+    // console.log(ctx.user.id)
     const newProject = this.projectRepo.create(project);
-    await newProject.save();
-    return newProject;
-  }
+    const manager : User | undefined = await this.userRepo.findOne(id);
+    if (manager) {
+        await manager.save();
+        await newProject.save();
+      }
+      return newProject;
+    }
+
+  
 
   //update project
   @Mutation(() => Project)
@@ -40,10 +50,10 @@ export class ProjectResolver {
     @Arg("description") description: string,
     @Arg("estimatedTime") estimatedTime: number,
     @Arg("status") status: string,
-    @Arg("dueDate") dueDate: Date,
-    @Arg("tasks") tasks: Task[],
-    @Arg("managers") managers: Manager[],
-    @Arg("members") members: Member[]
+    @Arg("dueDate") dueDate: string,
+    @Arg("tasks", () => [Number]) tasksIds: number[],
+    @Arg("managers", () => [Number]) managersIds: number[],
+    @Arg("members", () => [Number]) membersIds: number[]
   ): Promise<Project | null> {
     const project = await this.projectRepo.findOne(id);
     if (project) {
@@ -53,9 +63,9 @@ export class ProjectResolver {
         estimatedTime,
         status,
         dueDate,
-        tasks,
-        managers,
-        members,
+        //tasks,
+        //managers,
+        //members,
       });
       await project.save();
       return project;

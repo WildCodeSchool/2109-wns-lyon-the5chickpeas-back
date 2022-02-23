@@ -100,7 +100,7 @@ export class UsersResolver {
 
     // Generate token
     const token = jwt.sign({ user: "newUser" }, `${email}`, {
-      expiresIn: "600s",
+      expiresIn: "6000s",
     });
 
     // Save in DB
@@ -124,24 +124,34 @@ export class UsersResolver {
     @Arg("email") email: string,
     @Arg("password") password: string,
     @Arg("validAccountToken") validAccountToken: string
-  ): Promise<string> {
+
+  ): Promise<string | any> {
     const user = await this.userRepo.findOne({ email });
+    let token = "";
 
     if (user) {
-      if (user.validAccountToken === "") {
-        return "Connected...";
-      }
+      if (user.validAccountToken !== "") {
 
-      try {
-        const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
-        console.log("it works");
-      } catch (error) {
-        return "Expired token...";
+        // Compte pas encore valide
+        try {
+          const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
+          return console.log("Va valider ton compte..."); // va voir tes mails
+        } catch (error) {
+          return console.log('Erreur, token expired...') // envoie new token, va checker tes mails ...
+        }
+      } else {
+        // compte ok, generation de token dauthentification
+        //check password, if pwd valid /database then generate & return token
+        if (await argon2.verify(user.password, password)) {
+          token = jwt.sign({ userId: user.id }, 'supersecret');
+          return token;
+        } else {
+          return console.log('mot de passe invalide...');
+        }
       }
-
-      return "Account not validated yet...";
     }
-
-    return "No user found for those credentials";
+    
+    return console.log("user found for those credentials");
+    
   }
 }

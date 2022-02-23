@@ -3,7 +3,7 @@ import { getRepository } from "typeorm";
 import { Manager } from "../models/Manager";
 
 @Resolver(Manager)
-export class ManagerResolver {
+export class ManagersResolver {
   private managerRepo = getRepository(Manager);
 
   @Query(() => [Manager])
@@ -18,15 +18,15 @@ export class ManagerResolver {
     return await this.managerRepo.findOne(id);
   }
 
-  // create manager
-  @Mutation(() => Manager)
-  async addManager(
-    @Arg("data", () => AssetInput) asset: AssetInput
-  ): Promise<Asset> {
-    const newAsset = this.assetRepo.create(asset);
-    await newAsset.save();
-    return newAsset;
-  }
+  // // create manager
+  // @Mutation(() => Manager)
+  // async addManager(
+  //   @Arg("data", () => AssetInput) asset: AssetInput
+  // ): Promise<Asset> {
+  //   const newAsset = this.assetRepo.create(asset);
+  //   await newAsset.save();
+  //   return newAsset;
+  // }
 
   // delete manager
   @Mutation(() => Boolean)

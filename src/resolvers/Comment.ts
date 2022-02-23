@@ -3,7 +3,7 @@ import { getRepository } from "typeorm";
 import { Comment, CommentInput } from "../models/Comment";
 
 @Resolver(Comment)
-export class CommentResolver {
+export class CommentsResolver {
     private commentRepo = getRepository(Comment);
 
     @Query(() => [Comment])

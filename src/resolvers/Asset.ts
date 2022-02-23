@@ -3,7 +3,7 @@ import { getRepository } from "typeorm";
 import { Asset, AssetInput } from "../models/Asset";
 
 @Resolver(Asset)
-export class AssetResolver {
+export class AssetsResolver {
   private assetRepo = getRepository(Asset);
 
   @Query(() => [Asset])

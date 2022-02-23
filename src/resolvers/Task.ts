@@ -3,7 +3,7 @@ import { getRepository } from "typeorm";
 import { Task } from "../models/Task";
 
 @Resolver(Task)
-export class TaskResolver {
+export class TasksResolver {
   private taskRepo = getRepository(Task);
 
   // get all tasks

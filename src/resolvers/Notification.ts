@@ -3,7 +3,7 @@ import { getRepository, createQueryBuilder } from "typeorm";
 import { Notification, NotificationInput } from "../models/Notification";
 
 @Resolver(Notification)
-export class NotificationResolver {
+export class NotificationsResolver {
   private notificationRepo = getRepository(Notification);
 
   @Query(() => [Notification])

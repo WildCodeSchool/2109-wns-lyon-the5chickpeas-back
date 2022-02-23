@@ -1,9 +1,10 @@
 import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
+import { AssetInput } from "../models/Asset";
 import { Member } from "../models/Member";
 
 @Resolver(Member)
-export class MemberResolver {
+export class MembersResolver {
   private memberRepo = getRepository(Member);
 
   @Query(() => [Member])
@@ -19,14 +20,14 @@ export class MemberResolver {
   }
 
   // create member
-  @Mutation(() => Member)
-  async addMember(
-    @Arg("data", () => AssetInput) asset: AssetInput
-  ): Promise<Member> {
-    const newMember = this.memberRepo.create(asset);
-    await newMember.save();
-    return newMember;
-  }
+  // @Mutation(() => Member)
+  // async addMember(
+  //   @Arg("data", () => AssetInput) asset: AssetInput
+  // ): Promise<Member> {
+  //   const newMember = this.memberRepo.create(asset);
+  //   await newMember.save();
+  //   return newMember;
+  // }
 
   // delete member
   @Mutation(() => Boolean)

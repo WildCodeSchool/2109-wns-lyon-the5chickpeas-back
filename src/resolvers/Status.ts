@@ -3,7 +3,7 @@ import { getRepository } from "typeorm";
 import { Status, StatusInput } from "../models/Status";
 
 @Resolver(Status)
-export class StatussResolver {
+export class StatusResolver {
   private statusRepo = getRepository(Status);
 
   @Query(() => [Status])

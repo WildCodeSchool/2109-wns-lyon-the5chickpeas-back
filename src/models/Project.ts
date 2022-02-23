@@ -52,7 +52,7 @@ export class Project extends BaseEntity {
   //one project has several managers
   @Field(() => [Manager])
   @ManyToMany((type) => Manager, (manager) => manager.projects)
-  managers?: Manager[];
+  managers!: Manager[];
 
   //one project can have serveral collaborators
   @Field(() => [Member])
