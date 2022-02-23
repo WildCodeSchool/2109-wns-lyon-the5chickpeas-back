@@ -3,14 +3,13 @@ import {
   BaseEntity,
   Column,
   Entity,
-  JoinTable,
   PrimaryGeneratedColumn,
   ManyToMany,
   OneToMany,
 } from "typeorm";
 import { Role } from "./Role";
-import { Project } from "./Project";
 import { Notification } from "./Notification";
+//import { Project } from "./Project";
 
 @ObjectType() // Decorateur type-graphql
 @Entity() // Decorateur typeorm permet de créer la base de données
