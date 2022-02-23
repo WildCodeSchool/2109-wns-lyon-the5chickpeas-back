@@ -6,9 +6,16 @@ import { Asset, AssetInput } from "../models/Asset";
 export class AssetResolver {
     private assetRepo = getRepository(Asset);
 
+    // get all assets
     @Query(() => [Asset])
     async getAssets(): Promise<Asset[]> {
         return await this.assetRepo.find();
+    }
+
+    // get one asset
+    @Query(() => Asset)
+    async getAsset(@Arg("id", () => ID) id: number): Promise<Asset | undefined> {
+        return await this.assetRepo.findOne(id);
     }
 
     // create asset
