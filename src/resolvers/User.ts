@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
 import { User } from "../models/User";
 import * as argon2 from "argon2";
@@ -98,7 +98,7 @@ export class UsersResolver {
       role = newRole;
     }
 
-    // Generate token
+    // Generate token for ValidationAccount
     const token = jwt.sign({ user: "newUser" }, `${email}`, {
       expiresIn: "6000s",
     });
@@ -123,35 +123,39 @@ export class UsersResolver {
     @Arg("pseudo") pseudo: string,
     @Arg("email") email: string,
     @Arg("password") password: string,
-    @Arg("validAccountToken") validAccountToken: string
-
+    @Arg("validAccountToken") validAccountToken: string,
+    @Ctx() context: { token: string; userAgent: string; user: User | null }
   ): Promise<string | any> {
     const user = await this.userRepo.findOne({ email });
     let token = "";
+    const ua = context.userAgent;
+    const isMobile =
+      /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+        ua
+      );
+    console.log(isMobile);
 
     if (user) {
       if (user.validAccountToken !== "") {
-
         // Compte pas encore valide
         try {
           const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
           return console.log("Va valider ton compte..."); // va voir tes mails
         } catch (error) {
-          return console.log('Erreur, token expired...') // envoie new token, va checker tes mails ...
+          return console.log("Erreur, token expired..."); // envoie new token, va checker tes mails ...
         }
       } else {
-        // compte ok, generation de token dauthentification
+        // compte ok, generation de token d'authentification
         //check password, if pwd valid /database then generate & return token
         if (await argon2.verify(user.password, password)) {
-          token = jwt.sign({ userId: user.id }, 'supersecret');
+          token = jwt.sign({ userId: user.id }, "supersecret");
           return token;
         } else {
-          return console.log('mot de passe invalide...');
+          return console.log("mot de passe invalide...");
         }
       }
     }
-    
+
     return console.log("user found for those credentials");
-    
   }
 }

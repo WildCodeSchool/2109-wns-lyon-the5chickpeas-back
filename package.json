@@ -26,6 +26,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/node": "^16.11.9",
+    "@types/ua-parser-js": "^0.7.36",
     "apollo-server": "^3.5.0",
     "argon2": "^0.28.2",
     "cors": "^2.8.5",

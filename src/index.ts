@@ -18,7 +18,7 @@ import { StatusResolver } from "./resolvers/Status";
 import { TasksResolver } from "./resolvers/Task";
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
-import { customAuthChecker } from './auth';
+import { customAuthChecker } from "./auth";
 
 /**
  * Import from others files
@@ -44,8 +44,8 @@ const main = async () => {
 
   const schema = await buildSchema({
     resolvers: [
-      UsersResolver, 
-      RolesResolver, 
+      UsersResolver,
+      RolesResolver,
       AssetsResolver,
       CommentsResolver,
       ManagersResolver,
@@ -55,7 +55,7 @@ const main = async () => {
       StatusResolver,
       TasksResolver,
     ],
-    authChecker: customAuthChecker
+    authChecker: customAuthChecker,
   });
 
   // app.use(express.urlencoded({ extended: false }));
@@ -69,8 +69,16 @@ const main = async () => {
     }));*/
 
   // Create the GraphQL server
+  // send the tokenin the header
   const server = new ApolloServer({
     schema,
+    context: ({ req }) => {
+      return {
+        token: req.headers.authorization,
+        userAgent: req.headers["user-agent"],
+        user: null,
+      };
+    },
   });
 
   // Start the server
