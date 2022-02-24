@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, ID, Mutation, Authorized, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
 import { Task } from "../models/Task";
 
@@ -7,12 +7,14 @@ export class TasksResolver {
   private taskRepo = getRepository(Task);
 
   // get all tasks
+  @Authorized()
   @Query(() => [Task])
   async getTasks(): Promise<Task[]> {
     return await this.taskRepo.find({ relations: ["users"] }); // à revoir avec l'equipe si on veut get par rapport au user ou au projet...
   }
 
   // delete task
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteTask(@Arg("id", () => ID) id: number): Promise<Boolean> {
     const task = await this.taskRepo.findOne(id);
@@ -24,6 +26,7 @@ export class TasksResolver {
   }
 
   // update task
+  @Authorized()
   @Mutation(() => Task)
   async updateTask(
     @Arg("id", () => ID) id: number,

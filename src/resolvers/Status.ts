@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, ID, Mutation, Authorized, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
 import { Status, StatusInput } from "../models/Status";
 
@@ -6,11 +6,13 @@ import { Status, StatusInput } from "../models/Status";
 export class StatusResolver {
   private statusRepo = getRepository(Status);
 
+  @Authorized()
   @Query(() => [Status])
   async getStatus(): Promise<Status[]> {
     return await this.statusRepo.find();
   }
 
+  @Authorized()
   @Mutation(() => Status)
   async addStatus(
     @Arg("data", () => StatusInput) status: StatusInput
@@ -21,6 +23,7 @@ export class StatusResolver {
   }
 
   //delete status
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteStatus(@Arg("id", () => ID) id: number): Promise<Boolean> {
     const status = await this.statusRepo.findOne(id);
@@ -32,6 +35,7 @@ export class StatusResolver {
   }
 
   //update status
+  @Authorized()
   @Mutation(() => Status)
   async updateStatus(
     @Arg("id", () => ID) id: number,

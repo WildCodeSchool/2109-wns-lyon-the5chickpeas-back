@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, ID, Mutation, Query, Resolver, Authorized } from "type-graphql";
 import { getRepository } from "typeorm";
 import { AssetInput } from "../models/Asset";
 import { Member } from "../models/Member";
@@ -7,11 +7,13 @@ import { Member } from "../models/Member";
 export class MembersResolver {
   private memberRepo = getRepository(Member);
 
+  @Authorized()
   @Query(() => [Member])
   async getMembers(): Promise<Member[]> {
     return await this.memberRepo.find();
   }
 
+  @Authorized()
   @Query(() => Member)
   async getMember(
     @Arg("id", () => ID) id: number
@@ -21,6 +23,7 @@ export class MembersResolver {
 
   // create member
   // @Mutation(() => Member)
+  // @Authorized()
   // async addMember(
   //   @Arg("data", () => AssetInput) asset: AssetInput
   // ): Promise<Member> {
@@ -30,6 +33,7 @@ export class MembersResolver {
   // }
 
   // delete member
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteMember(@Arg("id", () => ID) id: number): Promise<Boolean> {
     const member = await this.memberRepo.findOne(id);

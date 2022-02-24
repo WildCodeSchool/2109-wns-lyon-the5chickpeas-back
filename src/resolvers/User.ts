@@ -1,4 +1,12 @@
-import { Arg, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import { getRepository } from "typeorm";
 import { User } from "../models/User";
 import * as argon2 from "argon2";
@@ -45,12 +53,14 @@ export class UsersResolver {
   }
 
   // Get all users
+  @Authorized()
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
     return await this.userRepo.find({ relations: ["roles"] });
   }
 
   // update user
+  @Authorized()
   @Mutation(() => User)
   async updateUser(
     @Arg("id", () => ID) id: number,
@@ -69,6 +79,7 @@ export class UsersResolver {
   }
 
   // Delete user
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteUser(@Arg("id", () => ID) id: number): Promise<Boolean> {
     const user = await this.userRepo.findOne(id);
@@ -148,14 +159,15 @@ export class UsersResolver {
         // compte ok, generation de token d'authentification
         //check password, if pwd valid /database then generate & return token
         if (await argon2.verify(user.password, password)) {
-          token = jwt.sign({ userId: user.id }, "supersecret");
+          token = jwt.sign({ userId: user.id }, "supersecret", {
+            expiresIn: !isMobile ? "86400s" : "31000000",
+          });
           return token;
         } else {
           return console.log("mot de passe invalide...");
         }
       }
     }
-
     return console.log("user found for those credentials");
   }
 }

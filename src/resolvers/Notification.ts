@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, ID, Mutation, Authorized, Query, Resolver } from "type-graphql";
 import { getRepository, createQueryBuilder } from "typeorm";
 import { Notification, NotificationInput } from "../models/Notification";
 
@@ -6,6 +6,7 @@ import { Notification, NotificationInput } from "../models/Notification";
 export class NotificationsResolver {
   private notificationRepo = getRepository(Notification);
 
+  @Authorized()
   @Query(() => [Notification])
   async getNotifications(): Promise<Notification[]> {
     return await this.notificationRepo
@@ -15,6 +16,7 @@ export class NotificationsResolver {
   }
 
   // get one notification
+  @Authorized()
   @Query(() => Notification)
   async getNotification(
     @Arg("id", () => ID) id: number
@@ -23,6 +25,7 @@ export class NotificationsResolver {
   }
 
   // create notification
+  @Authorized()
   @Mutation(() => Notification)
   async addNotification(
     @Arg("data", () => NotificationInput) notification: NotificationInput
@@ -33,6 +36,7 @@ export class NotificationsResolver {
   }
 
   // delete notification
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteNotification(@Arg("id", () => ID) id: number): Promise<Boolean> {
     const notification = await this.notificationRepo.findOne(id);

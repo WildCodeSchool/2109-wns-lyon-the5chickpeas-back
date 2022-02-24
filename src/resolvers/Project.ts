@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, ID, Mutation, Authorized, Query, Resolver } from "type-graphql";
 import { getRepository, createQueryBuilder } from "typeorm";
 import { Project, ProjectInput } from "../models/Project";
 import { Task, TaskInput } from "../models/Task";
@@ -11,12 +11,14 @@ export class ProjectsResolver {
   private projectRepo = getRepository(Project);
   private userRepo = getRepository(User);
 
+  @Authorized()
   @Query(() => [Project])
   async getProjects(): Promise<Project[]> {
     return await this.projectRepo.find();
   }
 
   // get one project
+  @Authorized()
   @Query(() => Project)
   async getProject(
     @Arg("id", () => ID) id: number
@@ -25,24 +27,24 @@ export class ProjectsResolver {
   }
 
   // create project
+  @Authorized()
   @Mutation(() => Project)
   async addProject(
     @Arg("data", () => ProjectInput) project: ProjectInput,
-    @Arg("id", () => ID) id: number,
+    @Arg("id", () => ID) id: number
   ): Promise<Project> {
     // console.log(ctx.user.id)
     const newProject = this.projectRepo.create(project);
-    const manager : User | undefined = await this.userRepo.findOne(id);
+    const manager: User | undefined = await this.userRepo.findOne(id);
     if (manager) {
-        await manager.save();
-        await newProject.save();
-      }
-      return newProject;
+      await manager.save();
+      await newProject.save();
     }
-
-  
+    return newProject;
+  }
 
   //update project
+  @Authorized()
   @Mutation(() => Project)
   async updateProject(
     @Arg("id", () => ID) id: number,
@@ -75,6 +77,7 @@ export class ProjectsResolver {
   }
 
   // delete project
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteProject(@Arg("id", () => ID) id: number): Promise<Boolean> {
     const project = await this.projectRepo.findOne(id);

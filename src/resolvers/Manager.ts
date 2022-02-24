@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, ID, Mutation, Query, Resolver, Authorized } from "type-graphql";
 import { getRepository } from "typeorm";
 import { Manager } from "../models/Manager";
 
@@ -6,11 +6,13 @@ import { Manager } from "../models/Manager";
 export class ManagersResolver {
   private managerRepo = getRepository(Manager);
 
+  @Authorized()
   @Query(() => [Manager])
   async getManagers(): Promise<Manager[]> {
     return await this.managerRepo.find();
   }
 
+  @Authorized()
   @Query(() => Manager)
   async getManager(
     @Arg("id", () => ID) id: number
@@ -29,6 +31,7 @@ export class ManagersResolver {
   // }
 
   // delete manager
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteManager(@Arg("id", () => ID) id: number): Promise<Boolean> {
     const manager = await this.managerRepo.findOne(id);
