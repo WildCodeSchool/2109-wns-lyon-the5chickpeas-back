@@ -7,6 +7,7 @@ import {
   ManyToMany,
   JoinColumn,
   JoinTable,
+  Column,
 } from "typeorm";
 import { Project } from "./Project";
 import { User } from "./User";
@@ -19,6 +20,7 @@ export class Member extends BaseEntity {
   id!: number;
 
   @Field(() => [Project])
+  @Column({ nullable: true })
   @ManyToMany((type) => Project, (project) => project.members)
   @JoinTable()
   projects?: Project[];

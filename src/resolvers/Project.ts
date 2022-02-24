@@ -10,6 +10,7 @@ import { Member } from "../models/Member";
 export class ProjectsResolver {
   private projectRepo = getRepository(Project);
   private userRepo = getRepository(User);
+  private managerRepo = getRepository(Manager);
 
   @Authorized()
   @Query(() => [Project])
@@ -31,16 +32,23 @@ export class ProjectsResolver {
   @Mutation(() => Project)
   async addProject(
     @Arg("data", () => ProjectInput) project: ProjectInput,
-    @Arg("id", () => ID) id: number
+    @Arg("userId", () => ID) id: number
   ): Promise<Project> {
     // console.log(ctx.user.id)
-    const newProject = this.projectRepo.create(project);
-    const manager: User | undefined = await this.userRepo.findOne(id);
+    const newProject = project;
+    newProject.createdDate = new Date();
+    // if(!project.dateLimit) {
+    //   newProject.dateLimit = new Date();
+    // }
+    // if(!project.estimatedTime) {
+    //   newProject.estimatedTime = 0;
+    // }
+    const projectSaved = this.projectRepo.create(project).save();
+    const manager: User | undefined = await this.userRepo.findOne({where: {id}});
     if (manager) {
-      await manager.save();
-      await newProject.save();
+      await this.managerRepo.create(manager).save();
     }
-    return newProject;
+    return projectSaved;
   }
 
   //update project

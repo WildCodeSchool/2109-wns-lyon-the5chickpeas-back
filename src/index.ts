@@ -1,10 +1,7 @@
 /**
  * Import from installed packages
  */
-import express from "express";
-import { graphqlHTTP } from "express-graphql";
-import cors from "cors";
-import { createConnection } from "typeorm";
+import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { UsersResolver } from "./resolvers/User";
 import { RolesResolver } from "./resolvers/Role";
@@ -19,6 +16,7 @@ import { TasksResolver } from "./resolvers/Task";
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
 import { customAuthChecker } from "./auth";
+import { createConnection } from "typeorm";
 
 /**
  * Import from others files

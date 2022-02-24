@@ -1,18 +1,11 @@
 const jwt = require("jsonwebtoken");
 import { getRepository } from "typeorm";
-import { isContext } from "vm";
 import { User } from "./models/User";
 
 export const customAuthChecker = async ({
-  root,
-  args,
   context,
-  info,
 }: {
-  root: any;
-  args: any;
   context: any;
-  info: any;
 }) => {
   //get the current user
   const userRepo = getRepository(User);
@@ -22,7 +15,7 @@ export const customAuthChecker = async ({
   try {
     //check if the token is valid / database
     const decoded = jwt.verify(userJwt, "supersecret");
-    //if not
+    //if we don't have userid
     if (!decoded.userId) {
       return false;
     }

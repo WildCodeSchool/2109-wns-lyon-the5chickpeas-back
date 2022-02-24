@@ -28,12 +28,15 @@ export class Comment extends BaseEntity {
   @CreateDateColumn({ type: 'datetime', nullable: false })
   // createdAt!: Date;
 
+  @Field(() => Task)
   @ManyToOne((type) => Task, (task) => task.comments) 
   task!: Task;
 
+  @Field(() => User)
   @ManyToOne((type) => User, (user) => user.comments)
   user!: User;
 
+  @Field(() => [Notification], { nullable: true })
   @OneToMany((type) => Notification, (notification) => notification.comment)
   notifications?: Notification[];
   

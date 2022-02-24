@@ -59,6 +59,22 @@ export class UsersResolver {
     return await this.userRepo.find({ relations: ["roles"] });
   }
 
+  // Get profile of someone
+  @Authorized()
+  @Query(() => User)
+  async getUser(@Arg("id", () => ID) id: number): Promise<User | undefined> {
+    const user = await this.userRepo.findOne(id);
+    return user;
+  }
+
+  // get "me"
+  @Authorized()
+  @Query(() => User)
+  async getMe(@Ctx() context: { user: User }): Promise<User | undefined> {
+    const user = context.user;
+    return await this.userRepo.findOne(user.id);
+  }
+  
   // update user
   @Authorized()
   @Mutation(() => User)
@@ -66,15 +82,22 @@ export class UsersResolver {
     @Arg("id", () => ID) id: number,
     @Arg("email") email: string,
     @Arg("password") password: string,
-    @Arg("pseudo") pseudo: string
+    @Arg("pseudo") pseudo: string,
+    @Ctx() context: any
   ): Promise<User | null> {
-    const user = await this.userRepo.findOne(id);
-    if (user) {
-      Object.assign(user, { email, password: argon2.hash(password), pseudo });
-      await user.save();
-      return user;
-    } else {
-      return null;
+    try{
+      const user = await this.userRepo.findOne(id);
+      const hashedPassword = await argon2.hash(password)
+      if (user) {
+        Object.assign(user, { email, password: hashedPassword, pseudo });
+        await user.save();
+        return user;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.log(err);
+      return null
     }
   }
 

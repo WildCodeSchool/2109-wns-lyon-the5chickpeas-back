@@ -23,6 +23,7 @@ export class Notification extends BaseEntity {
 
   //One notif can be linked to one user
   @Field(() => User)
+  @Column(() => User, {})
   @ManyToOne((type) => User, (user) => user.notifications)
   user?: User;
 

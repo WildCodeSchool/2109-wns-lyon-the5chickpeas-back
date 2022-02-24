@@ -1,10 +1,12 @@
 import { Arg, ID, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
 import { Asset, AssetInput } from "../models/Asset";
+import { Task } from "../models/Task";
 
 @Resolver(Asset)
 export class AssetsResolver {
   private assetRepo = getRepository(Asset);
+  private taskRepo = getRepository(Task);
 
   @Authorized()
   @Query(() => [Asset])
@@ -23,11 +25,20 @@ export class AssetsResolver {
   @Authorized()
   @Mutation(() => Asset)
   async addAsset(
-    @Arg("data", () => AssetInput) asset: AssetInput
-  ): Promise<Asset> {
-    const newAsset = this.assetRepo.create(asset);
-    await newAsset.save();
-    return newAsset;
+    @Arg("data", () => AssetInput) asset: AssetInput,
+    // @Arg("taskId") taskId: number
+  ): Promise<Asset | null> {
+    try {
+      const newAsset = this.assetRepo.create(asset);
+      // const task = this.taskRepo.findOne(taskId);
+      // console.log(task);
+      // newAsset.task = task;
+      await newAsset.save();
+      return newAsset;
+    } catch (err) {
+      console.log(err);
+      return null
+    }
   }
 
   // delete asset

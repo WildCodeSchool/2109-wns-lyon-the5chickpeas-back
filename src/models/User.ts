@@ -37,20 +37,21 @@ export class User extends BaseEntity {
   roles!: Role[];
 
   @Field({ nullable: true })
-  @Column({
-    nullable: true,
-  })
+  @Column({ nullable: true })
   validAccountToken!: string;
 
   @Field(() => [Notification])
+  @Column({ nullable: true })
   @OneToMany((type) => Notification, (notification) => notification.user)
   notifications?: Notification[];
 
   @Field(() => [Comment])
+  @Column({ nullable: true })
   @OneToMany((type) => Comment, (comment) => comment.user)
-  comments!: Comment[];
+  comments?: Comment[];
 
   @Field(() => [Task])
+  @Column({ nullable: true })
   @ManyToMany((type) => Task, (task) => task.users)
   tasks?: Task[];
 }

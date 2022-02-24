@@ -47,24 +47,31 @@ export class Task extends BaseEntity {
   @Column({ nullable: true })
   initialTimeSpentEstimated?: number;
 
-  @ManyToMany((type) => User, (user) => user.tasks, {
-    cascade: true,
-  })
+  @Field(() => [User])
+  @ManyToMany((type) => User, (user) => user.tasks)
   @JoinTable()
-  users?: User[];
+  users!: User[];
 
+  @Field(() => Project)
   @ManyToOne((type) => Project, (project) => project.tasks)
   project!: Project;
 
-  @ManyToOne(() => Status, (status) => status.tasks)
-  status?: Status;
+  @Field(() => Status)
+  @ManyToOne((type) => Status, (status) => status.tasks)
+  status!: Status;
 
+  @Field(() => [Comment], { nullable: true })
+  @Column({ nullable: true })
   @OneToMany((type) => Comment, (comment) => comment.task)
-  comments!: Comment[];
+  comments?: Comment[];
 
+  @Field(() => [Asset], { nullable: true })
+  @Column({ nullable: true })
   @OneToMany((type) => Asset, (asset) => asset.task)
-  assets!: Asset[];
+  assets?: Asset[];
 
+  @Field(() => [Notification], { nullable: true })
+  @Column({ nullable: true })
   @OneToMany((type) => Notification, (notification) => notification.task)
   notifications?: Notification[];
 }
