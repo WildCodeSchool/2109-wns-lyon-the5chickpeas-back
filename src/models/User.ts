@@ -1,4 +1,4 @@
-import { type } from "os";
+import "reflect-metadata";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -8,10 +8,10 @@ import {
   ManyToMany,
   OneToMany,
 } from "typeorm";
-import { Comment } from "./Comment";
 import { Role } from "./Role";
-import { Notification } from "./Notification";
-import { Task } from "./Task";
+// import { Comment } from "./Comment";
+// import { Notification } from "./Notification";
+// import { Task } from "./Task";
 
 @ObjectType() // Decorateur type-graphql
 @Entity() // Decorateur typeorm permet de créer la base de données
@@ -40,20 +40,20 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   validAccountToken!: string;
 
-  @Field(() => [Notification])
-  @Column({ nullable: true })
-  @OneToMany((type) => Notification, (notification) => notification.user)
-  notifications?: Notification[];
+  // @Field(() => [Notification])
+  // @Column({ nullable: true })
+  // @OneToMany((type) => Notification, (notification) => notification.user)
+  // notifications?: Notification[];
 
-  @Field(() => [Comment])
-  @Column({ nullable: true })
-  @OneToMany((type) => Comment, (comment) => comment.user)
-  comments?: Comment[];
+  // @Field(() => [Comment])
+  // @Column({ nullable: true })
+  // @OneToMany((type) => Comment, (comment) => comment.user)
+  // comments?: Comment[];
 
-  @Field(() => [Task])
-  @Column({ nullable: true })
-  @ManyToMany((type) => Task, (task) => task.users)
-  tasks?: Task[];
+  // @Field(() => [Task])
+  // @Column({ nullable: true })
+  // @ManyToMany((type) => Task, (task) => task.users)
+  // tasks?: Task[];
 }
 
 @InputType()

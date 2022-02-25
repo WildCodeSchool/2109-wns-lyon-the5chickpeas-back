@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -7,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Project } from "./Project";
-import { Task } from "./Task";
+// import { Task } from "./Task";
 
 @ObjectType()
 @Entity()
@@ -27,10 +28,10 @@ export class Status extends BaseEntity {
   projects?: Project[];
 
   //One status can have several tasks
-  @Field(() => [Task])
-  @Column({ nullable: true })
-  @OneToMany((type) => Task, (task) => task.status) // an project has one status
-  tasks?: Task[];
+  // @Field(() => [Task])
+  // @Column({ nullable: true })
+  // @OneToMany((type) => Task, (task) => task.status) // an project has one status
+  // tasks?: Task[];
 }
 
 @InputType()

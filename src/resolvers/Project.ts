@@ -1,10 +1,10 @@
 import { Arg, ID, Mutation, Authorized, Query, Resolver } from "type-graphql";
 import { getRepository, createQueryBuilder } from "typeorm";
 import { Project, ProjectInput } from "../models/Project";
-import { Task, TaskInput } from "../models/Task";
+// import { Task, TaskInput } from "../models/Task";
 import { Manager } from "../models/Manager";
 import { User } from "../models/User";
-import { Member } from "../models/Member";
+// import { Member } from "../models/Member";
 
 @Resolver(Project)
 export class ProjectsResolver {
@@ -61,9 +61,9 @@ export class ProjectsResolver {
     @Arg("estimatedTime") estimatedTime: number,
     @Arg("status") status: string,
     @Arg("dueDate") dueDate: string,
-    @Arg("tasks", () => [Number]) tasksIds: number[],
-    @Arg("managers", () => [Number]) managersIds: number[],
-    @Arg("members", () => [Number]) membersIds: number[]
+    // @Arg("tasks", () => [Number]) tasksIds: number[],
+    // @Arg("managers", () => [Number]) managersIds: number[],
+    // @Arg("members", () => [Number]) membersIds: number[]
   ): Promise<Project | null> {
     const project = await this.projectRepo.findOne(id);
     if (project) {

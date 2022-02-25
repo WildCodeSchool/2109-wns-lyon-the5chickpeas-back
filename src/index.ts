@@ -5,14 +5,14 @@ import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { UsersResolver } from "./resolvers/User";
 import { RolesResolver } from "./resolvers/Role";
-import { AssetsResolver } from "./resolvers/Asset";
-import { CommentsResolver } from "./resolvers/Comment";
+// import { AssetsResolver } from "./resolvers/Asset";
+// import { CommentsResolver } from "./resolvers/Comment";
 import { ManagersResolver } from "./resolvers/Manager";
-import { MembersResolver } from "./resolvers/Member";
-import { NotificationsResolver } from "./resolvers/Notification";
+// import { MembersResolver } from "./resolvers/Member";
+// import { NotificationsResolver } from "./resolvers/Notification";
 import { ProjectsResolver } from "./resolvers/Project";
 import { StatusResolver } from "./resolvers/Status";
-import { TasksResolver } from "./resolvers/Task";
+// import { TasksResolver } from "./resolvers/Task";
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
 import { customAuthChecker } from "./auth";
@@ -44,14 +44,14 @@ const main = async () => {
     resolvers: [
       UsersResolver,
       RolesResolver,
-      AssetsResolver,
-      CommentsResolver,
       ManagersResolver,
-      MembersResolver,
-      NotificationsResolver,
+      // AssetsResolver,
+      // CommentsResolver,
+      // MembersResolver,
+      // NotificationsResolver,
       ProjectsResolver,
       StatusResolver,
-      TasksResolver,
+      // TasksResolver,
     ],
     authChecker: customAuthChecker,
   });
