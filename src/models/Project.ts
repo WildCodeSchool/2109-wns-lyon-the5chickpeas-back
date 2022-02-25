@@ -8,10 +8,10 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
+  JoinTable,
 } from "typeorm";
 import { Status } from "./Status";
-import { Manager } from "./Manager";
-import { Member } from "./Member";
+import { User } from "./User";
 import { Task } from "./Task";
 
 @ObjectType() //graphql
@@ -25,20 +25,20 @@ export class Project extends BaseEntity {
   @Column()
   name!: string;
 
-  @Field()
-  @CreateDateColumn()
-  createdDate!: Date;
+  // @Field()
+  // @CreateDateColumn()
+  // createdDate!: Date;
 
   @Field()
   @Column()
   description!: string;
 
   @Field({ nullable: true })
-  @Column()
-  dueDate?: Date;
+  @Column({ nullable: true })
+  dueDate?: string;
 
   @Field({ nullable: true })
-  @Column()
+  @Column({ nullable: true })
   estimatedTime?: number;
 
   @Field(() => Status)
@@ -50,14 +50,15 @@ export class Project extends BaseEntity {
   tasks?: Task[];
 
   //one project has several managers
-  @Field(() => [Manager])
-  @ManyToMany((type) => Manager, (manager) => manager.projects)
-  managers!: Manager[];
+  @Field(() => [User])
+  @ManyToMany((type) => User, (user) => user.projects)
+  @JoinTable()
+  managers!: User[];
 
-  //one project can have serveral collaborators
-  @Field(() => [Member])
-  @ManyToMany((type) => Member, (member) => member.projects)
-  members?: Member[];
+  // //one project can have serveral collaborators
+  // @Field(() => [Member])
+  // @ManyToMany((type) => Member, (member) => member.projects)
+  // members?: Member[];
 }
 
 @InputType()
@@ -66,19 +67,19 @@ export class ProjectInput {
   @Column()
   name!: string;
 
-  @Field()
-  @CreateDateColumn()
-  createdDate!: Date;
+  // @Field()
+  // @CreateDateColumn()
+  // createdDate!: Date;
 
   @Field()
   @Column()
   description!: string;
 
   @Field({ nullable: true })
-  @Column()
-  dueDate?: Date;
+  @Column({ nullable: true })
+  dueDate?: string;
 
   @Field({ nullable: true })
-  @Column()
+  @Column({ nullable: true })
   estimatedTime?: number;
 }

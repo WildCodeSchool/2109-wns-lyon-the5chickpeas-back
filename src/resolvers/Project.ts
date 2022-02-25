@@ -1,15 +1,22 @@
-import { Arg, ID, Mutation, Authorized, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  ID,
+  Mutation,
+  Authorized,
+  Query,
+  Resolver,
+  Ctx,
+} from "type-graphql";
 import { getRepository, createQueryBuilder } from "typeorm";
 import { Project, ProjectInput } from "../models/Project";
 import { Task, TaskInput } from "../models/Task";
-import { Manager } from "../models/Manager";
 import { User } from "../models/User";
-import { Member } from "../models/Member";
 
 @Resolver(Project)
 export class ProjectsResolver {
   private projectRepo = getRepository(Project);
   private userRepo = getRepository(User);
+  //private managerRepo = getRepository(Manager);
 
   @Authorized()
   @Query(() => [Project])
@@ -31,15 +38,21 @@ export class ProjectsResolver {
   @Mutation(() => Project)
   async addProject(
     @Arg("data", () => ProjectInput) project: ProjectInput,
-    @Arg("id", () => ID) id: number
+    @Ctx() context: { token: string; userAgent: string; user: User | null }
   ): Promise<Project> {
     // console.log(ctx.user.id)
     const newProject = this.projectRepo.create(project);
-    const manager: User | undefined = await this.userRepo.findOne(id);
-    if (manager) {
-      await manager.save();
-      await newProject.save();
-    }
+    const currentUser: User | null = context.user;
+    // const existingManager = await this.managerRepo.findOne(currentUser?.id);
+    // if (!existingManager) {
+    //   const manager: Manager = this.managerRepo.create({
+    //     projects: [],
+    //     user: currentUser as User,
+    //   });
+    //   manager.save();
+    newProject.managers = [currentUser as User];
+    await newProject.save();
+
     return newProject;
   }
 
@@ -53,9 +66,9 @@ export class ProjectsResolver {
     @Arg("estimatedTime") estimatedTime: number,
     @Arg("status") status: string,
     @Arg("dueDate") dueDate: string,
-    @Arg("tasks", () => [Number]) tasksIds: number[],
-    @Arg("managers", () => [Number]) managersIds: number[],
-    @Arg("members", () => [Number]) membersIds: number[]
+    @Arg("tasks", () => [Number]) tasksIds: number[]
+    // @Arg("managers", () => [Number]) managersIds: number[],
+    // @Arg("members", () => [Number]) membersIds: number[]
   ): Promise<Project | null> {
     const project = await this.projectRepo.findOne(id);
     if (project) {

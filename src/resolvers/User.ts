@@ -144,7 +144,6 @@ export class UsersResolver {
       /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
         ua
       );
-    console.log(isMobile);
 
     if (user) {
       if (user.validAccountToken !== "") {

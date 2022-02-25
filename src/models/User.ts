@@ -12,6 +12,7 @@ import { Comment } from "./Comment";
 import { Role } from "./Role";
 import { Notification } from "./Notification";
 import { Task } from "./Task";
+import { Project } from "./Project";
 
 @ObjectType() // Decorateur type-graphql
 @Entity() // Decorateur typeorm permet de créer la base de données
@@ -53,6 +54,10 @@ export class User extends BaseEntity {
   @Field(() => [Task])
   @ManyToMany((type) => Task, (task) => task.users)
   tasks?: Task[];
+
+  @Field(() => [Project])
+  @ManyToMany((type) => Project, (project) => project.managers)
+  projects?: Project[];
 }
 
 @InputType()

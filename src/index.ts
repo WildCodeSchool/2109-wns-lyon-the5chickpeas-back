@@ -10,8 +10,8 @@ import { UsersResolver } from "./resolvers/User";
 import { RolesResolver } from "./resolvers/Role";
 import { AssetsResolver } from "./resolvers/Asset";
 import { CommentsResolver } from "./resolvers/Comment";
-import { ManagersResolver } from "./resolvers/Manager";
-import { MembersResolver } from "./resolvers/Member";
+// import { ManagersResolver } from "./resolvers/Manager";
+// import { MembersResolver } from "./resolvers/Member";
 import { NotificationsResolver } from "./resolvers/Notification";
 import { ProjectsResolver } from "./resolvers/Project";
 import { StatusResolver } from "./resolvers/Status";
@@ -48,8 +48,8 @@ const main = async () => {
       RolesResolver,
       AssetsResolver,
       CommentsResolver,
-      ManagersResolver,
-      MembersResolver,
+      // ManagersResolver,
+      // MembersResolver,
       NotificationsResolver,
       ProjectsResolver,
       StatusResolver,
