@@ -41,20 +41,20 @@ export class Task extends BaseEntity {
 
   @Field()
   @Column({ nullable: true })
-  dueDate?: Date;
+  dueDate?: string;
 
   @Field()
   @Column({ nullable: true })
   initialTimeSpentEstimated?: number;
 
-  // @ManyToMany((type) => User, (user) => user.tasks, {
-  //   cascade: true,
-  // })
-  // @JoinTable()
-  // users?: User[];
+  @ManyToMany((type) => User, (user) => user.tasks, {
+    cascade: true,
+  })
+  @JoinTable()
+  users?: User[];
 
-  // @ManyToOne((type) => Project, (project) => project.tasks)
-  // project!: Project;
+  @ManyToOne((type) => Project, (project) => project.tasks)
+  project!: Project;
 
   @ManyToOne(() => Status, (status) => status.tasks)
   status?: Status;
@@ -84,7 +84,7 @@ export class TaskInput {
   progress?: number;
 
   @Field()
-  dueDate?: Date;
+  dueDate?: string;
 
   @Field()
   initialTimeSpentEstimated?: number;
