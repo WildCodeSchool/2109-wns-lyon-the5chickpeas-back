@@ -67,8 +67,8 @@ export class ProjectsResolver {
     @Arg("estimatedTime") estimatedTime: number,
     @Arg("statusId") statusId: number,
     //@Arg("dueDate") dueDate: string
-    // @Arg("tasks", () => [Number]) tasksIds: number[], //TODO: why id ?
-    @Arg("managers", () => [String]) managers: string[] //TODO: array ?
+    // @Arg("tasks", () => [Number]) tasksIds: number[],
+    @Arg("managersIds", () => [Number]) managersIds: number //TODO: array ?
     //@Arg("members", () => [String]) members: string[] //TODO: array ?
   ): Promise<Project | null> {
     const project = await this.projectRepo.findOne(id);
@@ -81,17 +81,76 @@ export class ProjectsResolver {
         status,
         //dueDate,
         //tasksIds,
-        //managers,
         //members,
       });
       await project.save();
-      console.log(project);
 
       return project;
     } else {
       return null;
     }
   }
+
+  @Authorized()
+  @Mutation(() => Project)
+  async addManagerToProject(
+    @Arg("id", () => ID) id: number,
+    @Arg("managersId") managersId: number
+  ): Promise<Project | string> {
+    const project = await this.projectRepo.findOne(id);
+    if (!project) {
+      return "project not found";
+    }
+    const managerFound = await this.userRepo.findOne(managersId);
+    if (!managerFound) {
+      return "manager not found";
+    }
+    const managerFoundId = managerFound?.id;
+    let found = false;
+
+    project.managers.map((manager) => {
+      if (manager.id === managerFoundId) {
+        found = true;
+      }
+    });
+    if (found) return "already exist";
+
+    project.managers.push(managerFound);
+    project.save();
+    return project;
+  }
+
+  // @Authorized()
+  // @Mutation(() => Project)
+  // async addManagerToProject(
+  //   @Arg("id", () => ID) id: number,
+  //   @Arg("managersId") managersId: number
+  // ): Promise<Project | null> {
+  //   const project = await this.projectRepo.findOne(id);
+  //   if (!project) {
+  //     return null;
+  //   }
+
+  //   try {
+  //     const managerFound = await this.userRepo.findOne(managersId);
+  //     if (!managerFound) {
+  //       return null;
+  //     }
+  //     const managerFoundId = managerFound?.id;
+  //     let found = false;
+  //     project.managers.map((manager) => {
+  //       if (manager.id === managerFoundId) {
+  //         found = true;
+  //       }
+  //     });
+  //     project.managers.push(managerFound);
+  //     project.save();
+  //     return project;
+  //   } catch (err) {
+  //     console.log(err);
+  //     return null;
+  //   }
+  // }
 
   // delete project
   @Authorized()
