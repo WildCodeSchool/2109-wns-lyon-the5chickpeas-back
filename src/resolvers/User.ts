@@ -56,7 +56,7 @@ export class UsersResolver {
   @Authorized()
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
-    return await this.userRepo.find({ relations: ["roles"] });
+    return await this.userRepo.find({ relations: ["roles", "projects"] });
   }
 
   // update user
