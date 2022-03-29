@@ -51,13 +51,13 @@ export class User extends BaseEntity {
   @OneToMany((type) => Comment, (comment) => comment.user)
   comments!: Comment[];
 
-  @Field(() => [Task])
-  @ManyToMany((type) => Task, (task) => task.users)
-  tasks?: Task[];
+  // @Field(() => [Task])
+  // @ManyToMany((type) => Task, (task) => task.users)
+  // tasks?: Task[];
 
   @Field(() => [Project])
   @ManyToMany((type) => Project, (project) => project.managers)
-  @ManyToMany((type) => Project, (project) => project.members)
+  //@ManyToMany((type) => Project, (project) => project.members)
   projects?: Project[];
 }
 

@@ -18,7 +18,7 @@ export class Status extends BaseEntity {
 
   @Field()
   @Column()
-  name!: string;
+  code!: number;
 
   //One status can have several projects
   @Field(() => [Project])
@@ -35,5 +35,5 @@ export class Status extends BaseEntity {
 export class StatusInput {
   @Field()
   @Column()
-  name!: string;
+  code!: number;
 }

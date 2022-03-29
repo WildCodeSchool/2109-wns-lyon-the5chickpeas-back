@@ -39,12 +39,12 @@ export class StatusResolver {
   @Mutation(() => Status)
   async updateStatus(
     @Arg("id", () => ID) id: number,
-    @Arg("name") name: string
+    @Arg("code") code: 0 | 1 | 2
   ): Promise<Status | null> {
     const status = await this.statusRepo.findOne({ id });
     if (status) {
-      if (status.name) {
-        status.name = name;
+      if (status.code) {
+        status.code = code;
       }
       await status.save();
       return status;
