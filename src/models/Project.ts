@@ -55,10 +55,11 @@ export class Project extends BaseEntity {
   @JoinTable()
   managers!: User[];
 
-  // //one project can have serveral collaborators
-  // @Field(() => [Member])
-  // @ManyToMany((type) => Member, (member) => member.projects)
-  // members?: Member[];
+  //one project has several members
+  @Field(() => [User])
+  @ManyToMany((type) => User, (user) => user.projects)
+  @JoinTable()
+  members?: User[];
 }
 
 @InputType()

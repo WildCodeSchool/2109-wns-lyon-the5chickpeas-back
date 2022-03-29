@@ -16,7 +16,6 @@ import { User } from "../models/User";
 export class ProjectsResolver {
   private projectRepo = getRepository(Project);
   private userRepo = getRepository(User);
-  //private managerRepo = getRepository(Manager);
 
   @Authorized()
   @Query(() => [Project])
@@ -43,13 +42,6 @@ export class ProjectsResolver {
     // console.log(ctx.user.id)
     const newProject = this.projectRepo.create(project);
     const currentUser: User | null = context.user;
-    // const existingManager = await this.managerRepo.findOne(currentUser?.id);
-    // if (!existingManager) {
-    //   const manager: Manager = this.managerRepo.create({
-    //     projects: [],
-    //     user: currentUser as User,
-    //   });
-    //   manager.save();
     newProject.managers = [currentUser as User];
     await newProject.save();
 
@@ -61,24 +53,24 @@ export class ProjectsResolver {
   @Mutation(() => Project)
   async updateProject(
     @Arg("id", () => ID) id: number,
-    @Arg("name") subject: string,
+    @Arg("name") name: string,
     @Arg("description") description: string,
     @Arg("estimatedTime") estimatedTime: number,
     @Arg("status") status: string,
-    @Arg("dueDate") dueDate: string,
-    @Arg("tasks", () => [Number]) tasksIds: number[]
-    // @Arg("managers", () => [Number]) managersIds: number[],
-    // @Arg("members", () => [Number]) membersIds: number[]
+    @Arg("dueDate") dueDate: string
+    // @Arg("tasks", () => [Number]) tasksIds: number[], //TODO: why id ?
+    //@Arg("managers", () => [String]) managers: string[], //TODO: array ?
+    //@Arg("members", () => [String]) members: string[] //TODO: array ?
   ): Promise<Project | null> {
     const project = await this.projectRepo.findOne(id);
     if (project) {
       Object.assign(project, {
-        subject,
+        name,
         description,
         estimatedTime,
         status,
         dueDate,
-        //tasks,
+        //tasksIds,
         //managers,
         //members,
       });

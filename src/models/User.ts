@@ -57,6 +57,7 @@ export class User extends BaseEntity {
 
   @Field(() => [Project])
   @ManyToMany((type) => Project, (project) => project.managers)
+  @ManyToMany((type) => Project, (project) => project.members)
   projects?: Project[];
 }
 
