@@ -97,60 +97,57 @@ export class ProjectsResolver {
     @Arg("id", () => ID) id: number,
     @Arg("managersId") managersId: number
   ): Promise<Project | string> {
+    // checked if project exists
     const project = await this.projectRepo.findOne(id);
     if (!project) {
       return "project not found";
     }
+    // check if manager already exists
+    // manager to be added
     const managerFound = await this.userRepo.findOne(managersId);
     if (!managerFound) {
-      return "manager not found";
+      throw new Error("manager not found");
     }
     const managerFoundId = managerFound?.id;
-    let found = false;
-
+    //check if the managerFoundId already exists
     project.managers.map((manager) => {
       if (manager.id === managerFoundId) {
-        found = true;
+        throw new Error("manager already exists");
       }
     });
-    if (found) return "already exist";
-
     project.managers.push(managerFound);
     project.save();
     return project;
   }
 
-  // @Authorized()
-  // @Mutation(() => Project)
-  // async addManagerToProject(
-  //   @Arg("id", () => ID) id: number,
-  //   @Arg("managersId") managersId: number
-  // ): Promise<Project | null> {
-  //   const project = await this.projectRepo.findOne(id);
-  //   if (!project) {
-  //     return null;
-  //   }
-
-  //   try {
-  //     const managerFound = await this.userRepo.findOne(managersId);
-  //     if (!managerFound) {
-  //       return null;
-  //     }
-  //     const managerFoundId = managerFound?.id;
-  //     let found = false;
-  //     project.managers.map((manager) => {
-  //       if (manager.id === managerFoundId) {
-  //         found = true;
-  //       }
-  //     });
-  //     project.managers.push(managerFound);
-  //     project.save();
-  //     return project;
-  //   } catch (err) {
-  //     console.log(err);
-  //     return null;
-  //   }
-  // }
+  //delete managerFromProject
+  @Authorized()
+  @Mutation(() => Project)
+  async deleteManagerToProject(
+    @Arg("id", () => ID) id: number,
+    @Arg("managersId") managersId: number
+  ): Promise<Project | string> {
+    // checked if project exists
+    const project = await this.projectRepo.findOne(id);
+    if (!project) {
+      return "project not found";
+    }
+    // check if manager already exists
+    // manager to be deleted
+    const managerFound = await this.userRepo.findOne(managersId);
+    if (!managerFound) {
+      throw new Error("manager not found");
+    }
+    const managerFoundId = managerFound?.id;
+    //check if the managerFoundId already exists
+    project.managers.map((manager) => {
+      if (manager.id === managerFoundId) {
+        manager.remove();
+      }
+    });
+    project.save();
+    return project;
+  }
 
   // delete project
   @Authorized()
