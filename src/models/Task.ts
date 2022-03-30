@@ -31,15 +31,15 @@ export class Task extends BaseEntity {
   @Column()
   description!: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
   totalTimeSpent?: number;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   progress?: number;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
   dueDate?: string;
 
@@ -47,24 +47,31 @@ export class Task extends BaseEntity {
   @Column({ nullable: true })
   initialTimeSpentEstimated?: number;
 
+  @Field(() => [User], { nullable: true })
   @ManyToMany((type) => User, (user) => user.tasks, {
     cascade: true,
   })
   @JoinTable()
+  //users?: User[];
   users?: User[];
 
+  @Field(() => Project)
   @ManyToOne((type) => Project, (project) => project.tasks)
   project!: Project;
 
+  @Field(() => Status, { nullable: true })
   @ManyToOne(() => Status, (status) => status.tasks)
   status?: Status;
 
+  @Field(() => [Comment])
   @OneToMany((type) => Comment, (comment) => comment.task)
   comments!: Comment[];
 
+  @Field(() => [Asset])
   @OneToMany((type) => Asset, (asset) => asset.task)
   assets!: Asset[];
 
+  @Field(() => [Notification], { nullable: true })
   @OneToMany((type) => Notification, (notification) => notification.task)
   notifications?: Notification[];
 }
@@ -77,15 +84,15 @@ export class TaskInput {
   @Field()
   description!: string;
 
-  @Field()
+  @Field({ nullable: true })
   totalTimeSpent?: number;
 
-  @Field()
+  @Field({ nullable: true })
   progress?: number;
 
-  @Field()
+  @Field({ nullable: true })
   dueDate?: string;
 
-  @Field()
+  @Field({ nullable: true })
   initialTimeSpentEstimated?: number;
 }

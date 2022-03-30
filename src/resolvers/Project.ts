@@ -96,11 +96,11 @@ export class ProjectsResolver {
   async addManagerToProject(
     @Arg("id", () => ID) id: number,
     @Arg("managersId") managersId: number
-  ): Promise<Project | string> {
+  ): Promise<Project> {
     // checked if project exists
     const project = await this.projectRepo.findOne(id);
     if (!project) {
-      return "project not found";
+      throw new Error("project not found");
     }
     // check if manager already exists
     // manager to be added
@@ -108,13 +108,14 @@ export class ProjectsResolver {
     if (!managerFound) {
       throw new Error("manager not found");
     }
-    const managerFoundId = managerFound?.id;
-    //check if the managerFoundId already exists
+
+    // //check if the managerFoundId already exists
     project.managers.map((manager) => {
-      if (manager.id === managerFoundId) {
+      if (manager.id === managersId) {
         throw new Error("manager already exists");
       }
     });
+
     project.managers.push(managerFound);
     project.save();
     return project;
@@ -132,19 +133,12 @@ export class ProjectsResolver {
     if (!project) {
       return "project not found";
     }
-    // check if manager already exists
-    // manager to be deleted
-    const managerFound = await this.userRepo.findOne(managersId);
-    if (!managerFound) {
-      throw new Error("manager not found");
-    }
-    const managerFoundId = managerFound?.id;
-    //check if the managerFoundId already exists
-    project.managers.map((manager) => {
-      if (manager.id === managerFoundId) {
-        manager.remove();
-      }
-    });
+
+    // delete manager
+    project.managers = project.managers.filter(
+      (manager) => manager.id != managersId
+    );
+
     project.save();
     return project;
   }

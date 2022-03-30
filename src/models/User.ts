@@ -41,9 +41,9 @@ export class User extends BaseEntity {
   @Column({
     nullable: true,
   })
-  validAccountToken!: string;
+  validAccountToken?: string;
 
-  @Field(() => [Notification])
+  @Field(() => [Notification], { nullable: true })
   @OneToMany((type) => Notification, (notification) => notification.user)
   notifications?: Notification[];
 
@@ -51,11 +51,11 @@ export class User extends BaseEntity {
   @OneToMany((type) => Comment, (comment) => comment.user)
   comments!: Comment[];
 
-  @Field(() => [Task])
+  @Field(() => [Task], { nullable: true })
   @ManyToMany((type) => Task, (task) => task.users)
   tasks?: Task[];
 
-  @Field(() => [Project])
+  @Field(() => [Project], { nullable: true })
   @ManyToMany((type) => Project, (project) => project.managers)
   //@ManyToMany((type) => Project, (project) => project.members)
   projects?: Project[];
@@ -73,5 +73,5 @@ export class UserInput {
   password!: string;
 
   @Field({ nullable: true })
-  validAccountToken!: string;
+  validAccountToken?: string;
 }

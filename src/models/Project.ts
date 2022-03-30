@@ -45,7 +45,7 @@ export class Project extends BaseEntity {
   @ManyToOne((type) => Status, (status) => status.projects) // an project has one status
   status!: Status;
 
-  @Field(() => [Task])
+  @Field(() => [Task], { nullable: true })
   @OneToMany((type) => Task, (task) => task.project) // an project has several tasks
   tasks?: Task[];
 

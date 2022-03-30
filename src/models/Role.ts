@@ -20,6 +20,7 @@ export class Role extends BaseEntity {
   @Column()
   name!: string;
 
+  @Field(() => [User])
   @ManyToMany((type) => User, (user) => user.roles, {
     cascade: true,
   })

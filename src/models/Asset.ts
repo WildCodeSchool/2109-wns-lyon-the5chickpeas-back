@@ -19,6 +19,7 @@ export class Asset extends BaseEntity {
   @Column()
   name!: string;
 
+  @Field(() => Task)
   @ManyToOne((type) => Task, (task) => task.assets)
   task!: Task;
 }

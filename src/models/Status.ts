@@ -21,12 +21,12 @@ export class Status extends BaseEntity {
   code!: number;
 
   //One status can have several projects
-  @Field(() => [Project])
+  @Field(() => [Project], { nullable: true })
   @OneToMany((type) => Project, (project) => project.status) // an project has one status
   projects?: Project[];
 
   //One status can have several tasks
-  @Field(() => [Task])
+  @Field(() => [Task], { nullable: true })
   @OneToMany((type) => Task, (task) => task.status) // an project has one status
   tasks?: Task[];
 }
