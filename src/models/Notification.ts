@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
 } from "typeorm";
-import { Task } from "./Task";
+// import { Task } from "./Task";
 import { Comment } from "./Comment";
 import { User } from "./User";
 
@@ -21,20 +21,18 @@ export class Notification extends BaseEntity {
   @Column()
   name!: string;
 
-  //One notif can be linked to one user
-  @Field(() => User, { nullable: true })
+  @Field(() => User)
   @ManyToOne((type) => User, (user) => user.notifications)
-  user?: User;
+  user!: User;
 
   //One notif can be linked to one task
-  @Field(() => Task, { nullable: true })
-  @ManyToOne((type) => Task, (task) => task.notifications)
-  task?: Task;
+  // @Field(() => Task, { nullable: true })
+  // @ManyToOne((type) => Task, (task) => task.notifications)
+  // task?: Task;
 
-  //One notif can be linked to one comment
-  @Field(() => Comment, { nullable: true })
+  @Field(() => Comment)
   @ManyToOne((type) => Comment, (comment) => comment.notifications)
-  comment?: Comment;
+  comment!: Comment;
 }
 
 @InputType()

@@ -1,10 +1,13 @@
-import { Arg, ID, Mutation, Authorized, Query, Resolver } from "type-graphql";
+import { Arg, ID, Mutation, Authorized, Query, Resolver, Ctx } from "type-graphql";
 import { getRepository, createQueryBuilder } from "typeorm";
 import { Notification, NotificationInput } from "../models/Notification";
+import { Comment } from "../models/Comment";
+import { User } from "../models/User";
 
 @Resolver(Notification)
 export class NotificationsResolver {
   private notificationRepo = getRepository(Notification);
+  private commentRepo = getRepository(Comment);
 
   @Authorized()
   @Query(() => [Notification])
@@ -28,9 +31,21 @@ export class NotificationsResolver {
   @Authorized()
   @Mutation(() => Notification)
   async addNotification(
-    @Arg("data", () => NotificationInput) notification: NotificationInput
+    @Arg("data", () => NotificationInput) notification: NotificationInput,
+    @Arg("commentId") commentId: number,
+    @Ctx()
+    context: {
+      token: string;
+      userAgent: string;
+      user: User | null;
+    }
   ): Promise<Notification> {
     const newNotification = this.notificationRepo.create(notification);
+    const currentUser: User | null = context.user;
+    const comment = await this.commentRepo.findOne(commentId);
+    
+    newNotification.user = currentUser as User;
+    newNotification.comment = comment as Comment;
     await newNotification.save();
     return newNotification;
   }

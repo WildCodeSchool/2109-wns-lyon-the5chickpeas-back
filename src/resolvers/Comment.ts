@@ -1,10 +1,13 @@
-import { Arg, ID, Mutation, Query, Resolver, Authorized } from "type-graphql";
+import { Arg, ID, Mutation, Query, Resolver, Authorized, Ctx } from "type-graphql";
 import { getRepository } from "typeorm";
 import { Comment, CommentInput } from "../models/Comment";
+import { User } from "../models/User";
+import { Task } from "../models/Task";
 
 @Resolver(Comment)
 export class CommentsResolver {
   private commentRepo = getRepository(Comment);
+  private taskRepo = getRepository(Task);
 
   @Authorized()
   @Query(() => [Comment])
@@ -16,9 +19,22 @@ export class CommentsResolver {
   @Authorized()
   @Mutation(() => Comment)
   async addComment(
-    @Arg("data", () => CommentInput) comment: CommentInput
+    @Arg("taskId") taskId: number,
+    @Arg("data", () => CommentInput) comment: CommentInput,
+    @Ctx()
+    context: {
+      token: string;
+      userAgent: string;
+      user: User | null;
+    }
   ): Promise<Comment> {
     const newComment = this.commentRepo.create(comment);
+    const currentUser: User | null = context.user;
+    const task = await this.taskRepo.findOne(taskId);
+    
+    newComment.user = currentUser as User;
+    newComment.task = task as Task;
+    newComment.date = new Date().toISOString();
     await newComment.save();
     return newComment;
   }
@@ -42,7 +58,7 @@ export class CommentsResolver {
     @Arg("id", () => ID) id: number,
     @Arg("description") description: string
   ): Promise<Comment | null> {
-    const comment = await this.commentRepo.findOne({ id });
+    const comment = await this.commentRepo.findOne(id);
     if (comment) {
       if (comment.description) {
         comment.description = description;

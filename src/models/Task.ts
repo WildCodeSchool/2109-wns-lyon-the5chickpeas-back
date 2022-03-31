@@ -12,7 +12,7 @@ import {
 import { Asset } from "./Asset";
 import { Comment } from "./Comment";
 import { User } from "./User";
-import { Notification } from "./Notification";
+// import { Notification } from "./Notification";
 import { Project } from "./Project";
 import { Status } from "./Status";
 
@@ -36,24 +36,23 @@ export class Task extends BaseEntity {
   totalTimeSpent?: number;
 
   @Field({ nullable: true })
-  @Column()
+  @Column({ nullable: true })
   progress?: number;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
   dueDate?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
   initialTimeSpentEstimated?: number;
 
-  @Field(() => [User], { nullable: true })
+  @Field(() => [User])
   @ManyToMany((type) => User, (user) => user.tasks, {
     cascade: true,
   })
   @JoinTable()
-  //users?: User[];
-  users?: User[];
+  users!: User[];
 
   @Field(() => Project)
   @ManyToOne((type) => Project, (project) => project.tasks)
@@ -71,9 +70,9 @@ export class Task extends BaseEntity {
   @OneToMany((type) => Asset, (asset) => asset.task)
   assets!: Asset[];
 
-  @Field(() => [Notification], { nullable: true })
-  @OneToMany((type) => Notification, (notification) => notification.task)
-  notifications?: Notification[];
+  // @Field(() => [Notification], { nullable: true })
+  // @OneToMany((type) => Notification, (notification) => notification.task)
+  // notifications?: Notification[];
 }
 
 @InputType()

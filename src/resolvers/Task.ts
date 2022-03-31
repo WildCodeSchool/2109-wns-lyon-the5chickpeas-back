@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Authorized, Query, Resolver } from "type-graphql";
+import { Arg, ID, Mutation, Authorized, Query, Resolver, Ctx } from "type-graphql";
 import { getRepository } from "typeorm";
 import { Task, TaskInput } from "../models/Task";
 import { User } from "../models/User";
@@ -31,14 +31,22 @@ export class TasksResolver {
   @Mutation(() => Task)
   async addTask(
     @Arg("projectId") ProjectId: number,
-    @Arg("data", () => TaskInput) task: TaskInput
+    @Arg("data", () => TaskInput) task: TaskInput,
+    @Ctx()
+    context: {
+      token: string;
+      userAgent: string;
+      user: User | null;
+    }
   ): Promise<Task> {
+    const currentUser: User | null = context.user;
     const newTask = this.taskRepo.create(task);
     const status = await this.statusRepo.findOne({ code: 0 });
-    newTask.status = status as Status;
-
     const project = await this.projectRepo.findOne(ProjectId);
+
+    newTask.status = status as Status;
     newTask.project = project as Project;
+    newTask.users = [currentUser as User];
 
     await newTask.save();
     return newTask;
