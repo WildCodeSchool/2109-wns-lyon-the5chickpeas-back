@@ -1,4 +1,12 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import { getRepository } from "typeorm";
 import { User } from "../models/User";
 import * as argon2 from "argon2";
@@ -45,12 +53,14 @@ export class UsersResolver {
   }
 
   // Get all users
+  @Authorized()
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
-    return await this.userRepo.find({ relations: ["roles"] });
+    return await this.userRepo.find({ relations: ["roles", "projects"] });
   }
 
   // update user
+  @Authorized()
   @Mutation(() => User)
   async updateUser(
     @Arg("id", () => ID) id: number,
@@ -69,6 +79,7 @@ export class UsersResolver {
   }
 
   // Delete user
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteUser(@Arg("id", () => ID) id: number): Promise<Boolean> {
     const user = await this.userRepo.findOne(id);
@@ -98,9 +109,9 @@ export class UsersResolver {
       role = newRole;
     }
 
-    // Generate token
+    // Generate token for ValidationAccount
     const token = jwt.sign({ user: "newUser" }, `${email}`, {
-      expiresIn: "120s",
+      expiresIn: "6000s",
     });
 
     // Save in DB
@@ -113,27 +124,49 @@ export class UsersResolver {
     });
     await newUser.save();
     sendTokenNewUser(token, newUser);
+
     return newUser;
   }
 
   // Existing user
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => String, { nullable: true })
   async signin(
     @Arg("pseudo") pseudo: string,
     @Arg("email") email: string,
     @Arg("password") password: string,
-    @Arg("validAccountToken") validAccountToken: string
-  ): Promise<User | null> {
+    @Arg("validAccountToken") validAccountToken: string,
+    @Ctx() context: { token: string; userAgent: string; user: User | null }
+  ): Promise<string | any> {
     const user = await this.userRepo.findOne({ email });
+    let token = "";
+    const ua = context.userAgent;
+    const isMobile =
+      /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+        ua
+      );
 
     if (user) {
-      if (await argon2.verify(user.password, password)) {
-        return user;
+      if (user.validAccountToken !== "") {
+        // Compte pas encore valide
+        try {
+          const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
+          return console.log("Va valider ton compte..."); // va voir tes mails
+        } catch (error) {
+          return console.log("Erreur, token expired..."); // envoie new token, va checker tes mails ...
+        }
       } else {
-        return null;
+        // compte ok, generation de token d'authentification
+        //check password, if pwd valid /database then generate & return token
+        if (await argon2.verify(user.password, password)) {
+          token = jwt.sign({ userId: user.id }, "supersecret", {
+            expiresIn: !isMobile ? "86400s" : "31000000",
+          });
+          return token;
+        } else {
+          return console.log("mot de passe invalide...");
+        }
       }
-    } else {
-      return null;
     }
+    return console.log("user found for those credentials");
   }
 }

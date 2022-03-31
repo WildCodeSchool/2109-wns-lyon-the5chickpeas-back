@@ -1,3 +1,4 @@
+import { type } from "os";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -5,11 +6,16 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToMany,
+  OneToMany,
 } from "typeorm";
+import { Comment } from "./Comment";
 import { Role } from "./Role";
+import { Notification } from "./Notification";
+import { Task } from "./Task";
+import { Project } from "./Project";
 
 @ObjectType() // Decorateur type-graphql
-@Entity() // Decorateur typeorm
+@Entity() // Decorateur typeorm permet de créer la base de données
 export class User extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
@@ -24,6 +30,7 @@ export class User extends BaseEntity {
   pseudo!: string;
 
   @Column()
+  @Field()
   password!: string;
 
   @Field(() => [Role])
@@ -34,7 +41,24 @@ export class User extends BaseEntity {
   @Column({
     nullable: true,
   })
-  validAccountToken!: string;
+  validAccountToken?: string;
+
+  @Field(() => [Notification], { nullable: true })
+  @OneToMany((type) => Notification, (notification) => notification.user)
+  notifications?: Notification[];
+
+  @Field(() => [Comment])
+  @OneToMany((type) => Comment, (comment) => comment.user)
+  comments!: Comment[];
+
+  @Field(() => [Task], { nullable: true })
+  @ManyToMany((type) => Task, (task) => task.users)
+  tasks?: Task[];
+
+  @Field(() => [Project], { nullable: true })
+  @ManyToMany((type) => Project, (project) => project.managers)
+  //@ManyToMany((type) => Project, (project) => project.members)
+  projects?: Project[];
 }
 
 @InputType()
@@ -49,5 +73,5 @@ export class UserInput {
   password!: string;
 
   @Field({ nullable: true })
-  validAccountToken!: string;
+  validAccountToken?: string;
 }
