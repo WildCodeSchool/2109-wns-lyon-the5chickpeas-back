@@ -16,7 +16,7 @@ export async function sendTokenNewUser(token: string, user: User) {
   });
 
   const url = `${process.env.FRONT_URI_VALIDATE_ACCOUNT}${token}`;
-  console.log(user);
+
   const mailOptions = {
     from: process.env.ADMIN_EMAIL,
     to: `${user.email}`,

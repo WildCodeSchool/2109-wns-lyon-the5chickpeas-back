@@ -16,8 +16,7 @@ export async function sendRefreshToken(token: string, user: User) {
   });
 
   const url = `${process.env.FRONT_URI_VALIDATE_ACCOUNT}${token}`;
-  console.log(user);
-  var mailOptions = {
+  const mailOptions = {
     from: process.env.ADMIN_EMAIL,
     to: `${user.email}`,
     subject: `Please take in account your new token ${user.pseudo}`,
