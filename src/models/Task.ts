@@ -12,7 +12,6 @@ import {
 import { Asset } from "./Asset";
 import { Comment } from "./Comment";
 import { User } from "./User";
-// import { Notification } from "./Notification";
 import { Project } from "./Project";
 import { Status } from "./Status";
 
@@ -69,10 +68,6 @@ export class Task extends BaseEntity {
   @Field(() => [Asset])
   @OneToMany((type) => Asset, (asset) => asset.task)
   assets!: Asset[];
-
-  // @Field(() => [Notification], { nullable: true })
-  // @OneToMany((type) => Notification, (notification) => notification.task)
-  // notifications?: Notification[];
 }
 
 @InputType()

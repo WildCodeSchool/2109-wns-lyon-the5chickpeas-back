@@ -16,7 +16,7 @@ export class TasksResolver {
   @Authorized()
   @Query(() => [Task])
   async getTasks(): Promise<Task[]> {
-    return await this.taskRepo.find({ relations: ["users"] }); // à revoir avec l'equipe si on veut get par rapport au user ou au projet...
+    return await this.taskRepo.find({ relations: ["users"] });
   }
 
   // get one task
@@ -135,18 +135,6 @@ export class TasksResolver {
     if (!task) {
       throw new Error("task not found");
     }
-    // check if user already exists
-    // user to be deleted
-    // const userFound = await this.userRepo.findOne(userId);
-    // if (!userFound) {
-    //   throw new Error("user not found");
-    // }
-
-    //check if the userFound already exists
-    //want to remove the user from task whose task match with task
-    // user1 has task2, remove user1 from task2
-    //verifie que le user1 soit associé à task2, si oui
-    //on prend task2 et on remove user1
 
     // mettre à jour la liste des user
     task.users = task.users?.filter((user) => user.id != userId);
