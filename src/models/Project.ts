@@ -54,12 +54,6 @@ export class Project extends BaseEntity {
   @ManyToMany((type) => User, (user) => user.projects, { eager: true })
   @JoinTable()
   managers!: User[];
-
-  // //one project has several members
-  // @Field(() => [User])
-  // @ManyToMany((type) => User, (user) => user.projects)
-  // @JoinTable()
-  // members?: User[];
 }
 
 @InputType()

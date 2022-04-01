@@ -7,7 +7,7 @@ import {
   Resolver,
   Ctx,
 } from "type-graphql";
-import { getRepository, createQueryBuilder } from "typeorm";
+import { getRepository } from "typeorm";
 import { Project, ProjectInput } from "../models/Project";
 import { Status } from "../models/Status";
 import { Task, TaskInput } from "../models/Task";
@@ -66,10 +66,7 @@ export class ProjectsResolver {
     @Arg("description") description: string,
     @Arg("estimatedTime") estimatedTime: number,
     @Arg("statusId") statusId: number,
-    //@Arg("dueDate") dueDate: string
-    // @Arg("tasks", () => [Number]) tasksIds: number[],
-    @Arg("managersIds", () => [Number]) managersIds: number //TODO: array ?
-    //@Arg("members", () => [String]) members: string[] //TODO: array ?
+    @Arg("managersIds", () => [Number]) managersIds: number
   ): Promise<Project | null> {
     const project = await this.projectRepo.findOne(id);
     const status = await this.statusRepo.findOne(statusId);
@@ -79,9 +76,6 @@ export class ProjectsResolver {
         description,
         estimatedTime,
         status,
-        //dueDate,
-        //tasksIds,
-        //members,
       });
       await project.save();
 

@@ -1,4 +1,3 @@
-import { type } from "os";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 import {
   BaseEntity,
