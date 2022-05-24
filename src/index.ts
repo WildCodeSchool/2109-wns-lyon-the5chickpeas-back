@@ -25,7 +25,7 @@ const main = async () => {
     logging: false,
   })
     .then(async (connection) => {
-      console.log("tu es un bon...");
+      console.log("tu es un bonne...");
     })
     .catch((error) => console.log(error));
 

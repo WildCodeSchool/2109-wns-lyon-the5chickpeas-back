@@ -8,7 +8,7 @@ services:
         build: .
         ports:
           - 3002:3000 # ordinateur:conteneur docker, port conteneur docker == port dans fichier index
-        command: npm run dev
+        command: sh -c "npm run dev"
         env_file: 
           - .env
         volumes:
@@ -25,7 +25,7 @@ services:
           - .env
         ports:
           - 3307:3306
-        volumes: #anonyme (sans :) // #nommé => delegue a docker pour pouvoir retrouver les données après
+        volumes: #anonyme (sans :) // #nommé => delegue a docker pour pouvoir retrouver les données après, géré par docker
           - /var/lib/mysql
         healthcheck:
             test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
