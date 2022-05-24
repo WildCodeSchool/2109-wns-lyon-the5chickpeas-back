@@ -59,6 +59,22 @@ export class UsersResolver {
     return await this.userRepo.find({ relations: ["roles", "projects"] });
   }
 
+  // GetMe
+  @Authorized()
+  @Query(() => User, {nullable: true})
+  async getMe(
+    @Ctx()
+    context: {
+      token: string;
+      userAgent: string;
+      user: User | null;
+    }
+  ): Promise<User | null> {
+    const currentUser: User | null = context.user;
+    
+    return currentUser;
+  }
+
   // update user
   @Authorized()
   @Mutation(() => User)
@@ -69,6 +85,7 @@ export class UsersResolver {
     @Arg("pseudo") pseudo: string
   ): Promise<User | null> {
     const user = await this.userRepo.findOne(id);
+
     if (user) {
       Object.assign(user, { email, password: argon2.hash(password), pseudo });
       await user.save();
@@ -131,7 +148,7 @@ export class UsersResolver {
   // Existing user
   @Mutation(() => String, { nullable: true })
   async signin(
-    @Arg("pseudo") pseudo: string,
+    // @Arg("pseudo") pseudo: string,
     @Arg("email") email: string,
     @Arg("password") password: string,
     @Arg("validAccountToken") validAccountToken: string,
@@ -144,15 +161,14 @@ export class UsersResolver {
       /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
         ua
       );
-
     if (user) {
       if (user.validAccountToken !== "") {
         // Compte pas encore valide
         try {
           const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
-          return console.log("Va valider ton compte..."); // va voir tes mails
+          return null; // va voir tes mails
         } catch (error) {
-          return console.log("Erreur, token expired..."); // envoie new token, va checker tes mails ...
+          return null; // envoie new token, va checker tes mails ...
         }
       } else {
         // compte ok, generation de token d'authentification
@@ -163,10 +179,9 @@ export class UsersResolver {
           });
           return token;
         } else {
-          return console.log("mot de passe invalide...");
+          return null;
         }
       }
     }
-    return console.log("user found for those credentials");
   }
 }
