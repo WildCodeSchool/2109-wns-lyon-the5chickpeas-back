@@ -61,7 +61,7 @@ export class UsersResolver {
 
   // GetMe
   @Authorized()
-  @Query(() => User, {nullable: true})
+  @Query(() => User, { nullable: true })
   async getMe(
     @Ctx()
     context: {
@@ -71,7 +71,7 @@ export class UsersResolver {
     }
   ): Promise<User | null> {
     const currentUser: User | null = context.user;
-    
+
     return currentUser;
   }
 
@@ -184,4 +184,7 @@ export class UsersResolver {
       }
     }
   }
+  //detruit etat du user, que pour de la session
+  // @Mutation((returns) => String, { nullable: true })
+  // public async signout() {}
 }
