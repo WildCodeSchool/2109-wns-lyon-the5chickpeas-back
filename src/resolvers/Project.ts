@@ -46,7 +46,7 @@ export class ProjectsResolver {
       user: User | null;
     }
   ): Promise<Project> {
-    // console.log(ctx.user.id)
+    //console.log('egzet');return;
     const newProject = this.projectRepo.create(project);
     const currentUser: User | null = context.user;
     newProject.managers = [currentUser as User];

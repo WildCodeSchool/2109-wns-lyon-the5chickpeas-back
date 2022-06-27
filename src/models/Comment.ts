@@ -34,10 +34,6 @@ export class Comment extends BaseEntity {
   @Field(() => User)
   @ManyToOne((type) => User, (user) => user.comments)
   user!: User;
-
-  @Field(() => [Notification], { nullable: true })
-  @OneToMany((type) => Notification, (notification) => notification.comment)
-  notifications?: Notification[];
 }
 
 @InputType()
