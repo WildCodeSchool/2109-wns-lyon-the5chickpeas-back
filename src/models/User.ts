@@ -42,10 +42,6 @@ export class User extends BaseEntity {
   })
   validAccountToken?: string;
 
-  @Field(() => [Notification], { nullable: true })
-  @OneToMany((type) => Notification, (notification) => notification.user)
-  notifications?: Notification[];
-
   @Field(() => [Comment])
   @OneToMany((type) => Comment, (comment) => comment.user)
   comments!: Comment[];
@@ -58,6 +54,11 @@ export class User extends BaseEntity {
   @ManyToMany((type) => Project, (project) => project.managers)
   //@ManyToMany((type) => Project, (project) => project.members)
   projects?: Project[];
+
+  // X notifs par User => Une notif / pers ManyToOne => pers / plrs notifs OneToMany
+  @Field(() => [Notification])
+  @OneToMany((type) => Notification, (notification) => notification.users)
+  notifications!: Notification[];
 }
 
 @InputType()
