@@ -18,7 +18,7 @@ export class NotificationsResolver {
       .getMany();
   }
 
-  // get one notification
+  /*// get one notification
   @Authorized()
   @Query(() => Notification)
   async getNotification(
@@ -60,5 +60,5 @@ export class NotificationsResolver {
       return true;
     }
     return false;
-  }
+  }*/
 }

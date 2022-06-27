@@ -56,10 +56,10 @@ export class Project extends BaseEntity {
   @JoinTable()
   managers!: User[];
 
-  //One project has several notifications
+  /*//One project has several notifications
   @Field(() => [Notification], { nullable: true })
   @OneToMany((type) => Notification, (notification) => notification.project) // an project has one status
-  notification?: Notification[];
+  notifications?: Notification[];*/
 }
 
 @InputType()
