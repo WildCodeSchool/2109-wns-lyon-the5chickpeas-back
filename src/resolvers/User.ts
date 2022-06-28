@@ -32,18 +32,18 @@ export class UsersResolver {
     if (!user) return "Invalid token"; //throw new Error('The provided token is linked to no user'); ;
 
     try {
-      const isTokenValid = jwt.verify(
+      const tokenPayloadAccount = jwt.verify(
         validAccountToken,
-        process.env.JWT_SECRET
+        `${user.email}`
       );
-      if (isTokenValid) {
+      if (tokenPayloadAccount) {
         user.validAccountToken = "";
         user.save();
 
         // Flash blag : Your account has been successfully confirmed. You can now logged in
         return "Account validated";
       } else {
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ userId: user.id }, "supersecret", {
           expiresIn: "120s",
         });
 
@@ -133,7 +133,7 @@ export class UsersResolver {
     }
 
     // Generate token for ValidationAccount
-    const token = jwt.sign({ user: "newUser" }, `${email}`, {
+    const token = jwt.sign({ userId: user.id }, `${email}`, {
       expiresIn: "6000s",
     });
 
@@ -147,7 +147,6 @@ export class UsersResolver {
     });
     await newUser.save();
     sendTokenNewUser(token, newUser);
-
     return newUser;
   }
 
