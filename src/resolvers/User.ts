@@ -168,6 +168,7 @@ export class UsersResolver {
     if (user) {
       if (user.validAccountToken !== "") {
         // account not validated yet
+
         try {
           //get payload used for signup
           const tokenPayload = jwt.verify(
@@ -175,12 +176,14 @@ export class UsersResolver {
             `${user.email}`
           );
           if (tokenPayload) {
+            console.log("2", tokenPayload);
             return {
               errorMessage: "validation_to_be_done",
             };
           }
         } catch (error) {
           // only reason is expiration
+          console.log("1", error);
           sendRefreshToken;
           return {
             errorMessage: "validation_token_expired",
