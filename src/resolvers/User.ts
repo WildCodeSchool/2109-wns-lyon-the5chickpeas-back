@@ -133,7 +133,7 @@ export class UsersResolver {
     }
 
     // Generate token for ValidationAccount
-    const token = jwt.sign({ userId: user.id }, `${email}`, {
+    const token = jwt.sign({ user: "new User" }, `${email}`, {
       expiresIn: "6000s",
     });
 
@@ -159,7 +159,7 @@ export class UsersResolver {
     @Ctx() context: { token: string; userAgent: string; user: User | null }
   ): Promise<ResponseType | null> {
     const user = await this.userRepo.findOne({ email });
-    let token = "";
+    let authorizationToken = "";
     const ua = context.userAgent;
     const isMobile =
       /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
@@ -190,11 +190,11 @@ export class UsersResolver {
         // compte ok, generation de token d'authentification
         //check password, if pwd valid /database then generate & return token
         if (await argon2.verify(user.password, password)) {
-          token = jwt.sign({ userId: user.id }, "supersecret", {
+          authorizationToken = jwt.sign({ userId: user.id }, "supersecret", {
             expiresIn: !isMobile ? "86400s" : "31000000",
           });
           return {
-            token,
+            authorizationToken,
           };
         } else {
           return {
