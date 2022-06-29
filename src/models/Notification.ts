@@ -35,15 +35,10 @@ export class Notification extends BaseEntity {
   @Column({ type: 'date' })
   read_at!: Date;
 
-  // X notifs par User => Une notif / pers ManyToOne => pers / plrs notifs OneToMany
+  // Une notif pour une personne / une pers pour plrs notifs => OneToMany
   @Field(() => User)
   @ManyToOne((type) => User, (user) => user.notifications)
   users!: User;
-
-  /*// Une notification est liée à UN project
-  @Field(() => Project)
-  @ManyToOne((type) => Project, (project) => project.notifications)
-  project!: Project;*/
 
 }
 

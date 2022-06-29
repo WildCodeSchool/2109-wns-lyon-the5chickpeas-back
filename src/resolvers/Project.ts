@@ -12,12 +12,14 @@ import { Project, ProjectInput } from "../models/Project";
 import { Status } from "../models/Status";
 import { Task, TaskInput } from "../models/Task";
 import { User } from "../models/User";
+import { Notification } from '../models/Notification';
 
 @Resolver(Project)
 export class ProjectsResolver {
   private projectRepo = getRepository(Project);
   private userRepo = getRepository(User);
   private statusRepo = getRepository(Status);
+  private notificationRepo = getRepository(Notification);
 
   @Authorized()
   @Query(() => [Project])
@@ -46,13 +48,26 @@ export class ProjectsResolver {
       user: User | null;
     }
   ): Promise<Project> {
-    //console.log('egzet');return;
+    
     const newProject = this.projectRepo.create(project);
     const currentUser: User | null = context.user;
     newProject.managers = [currentUser as User];
     const status = await this.statusRepo.findOne({ code: 0 });
     newProject.status = status as Status;
     await newProject.save();
+
+    // Add a notification => Chercher les membres et faire une boucle FOR sur eux
+
+    // Creation de la notification
+    const newNotification = this.notificationRepo.create();
+    
+    // Affectation des valeurs
+    newNotification.name = '';
+    newNotification.unread = false;
+    newNotification.created_at = new Date();
+    newNotification.users = currentUser as User;
+
+    console.log(newProject, newNotification);return;
 
     return newProject;
   }
