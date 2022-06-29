@@ -11,6 +11,7 @@ import { TasksResolver } from "./resolvers/Task";
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
 import { customAuthChecker } from "./auth";
+require("dotenv").config();
 
 const main = async () => {
   createConnection({

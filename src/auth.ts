@@ -4,10 +4,7 @@ import { isContext } from "vm";
 import { User } from "./models/User";
 
 export const customAuthChecker = async ({
-  root,
-  args,
   context,
-  info,
 }: {
   root: any;
   args: any;

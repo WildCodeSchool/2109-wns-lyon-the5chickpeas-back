@@ -14,6 +14,7 @@ import { sendTokenNewUser } from "../services/email/tokenAccountValidation";
 import { sendRefreshToken } from "../services/email/newTokenAccountValidation";
 const jwt = require("jsonwebtoken");
 import { Role } from "../models/Role";
+import { ResponseType } from "../models/ResponseType";
 
 @Resolver(User)
 export class UsersResolver {
@@ -31,29 +32,35 @@ export class UsersResolver {
     if (!user) return "Invalid token"; //throw new Error('The provided token is linked to no user'); ;
 
     try {
-      const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
-      user.validAccountToken = "";
-      user.save();
+      const tokenPayloadAccount = jwt.verify(
+        validAccountToken,
+        `${user.email}`
+      );
+      if (tokenPayloadAccount) {
+        user.validAccountToken = "";
+        user.save();
 
-      // Flash blag : Your account has been successfully confirmed. You can now logged in
-      return "Account validated";
+        // Flash blag : Your account has been successfully confirmed. You can now logged in
+        return "Account validated";
+      } else {
+        const token = jwt.sign({ userId: user.id }, "supersecret", {
+          expiresIn: "120s",
+        });
+
+        user.validAccountToken = token;
+        user.save();
+        sendRefreshToken(token, user);
+        // Flash blag : A new email has been sent to your email account
+        return "Expired token, a new email has been sent to your email account";
+      }
     } catch (error) {
       // Regenerate Token
-      const token = jwt.sign({ user: "newUser" }, `${user.email}`, {
-        expiresIn: "120s",
-      });
-
-      user.validAccountToken = token;
-      user.save();
-      sendRefreshToken(token, user);
-
-      // Flash blag : A new email has been sent to your email account
-      return "Expired token";
+      return error;
     }
   }
 
   // Get all users
-  @Authorized()
+  @Authorized(["ROLE_ADMIN"])
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
     return await this.userRepo.find({ relations: ["roles", "projects"] });
@@ -61,7 +68,7 @@ export class UsersResolver {
 
   // GetMe
   @Authorized()
-  @Query(() => User, {nullable: true})
+  @Query(() => User, { nullable: true })
   async getMe(
     @Ctx()
     context: {
@@ -71,7 +78,7 @@ export class UsersResolver {
     }
   ): Promise<User | null> {
     const currentUser: User | null = context.user;
-    
+
     return currentUser;
   }
 
@@ -117,8 +124,7 @@ export class UsersResolver {
   ): Promise<User | Boolean> {
     // Check if a user exists with this email
     const user = await this.userRepo.findOne({ email });
-    if (user) throw new Error("A user already exists with this email"); // Faire la traduction 'Un utilisateur existe déjà avec cet adresse email !'
-
+    if (user) throw new Error("A user already exists with this email");
     let role = await this.roleRepo.findOne({ name: "ROLE_USER" });
     if (!role) {
       const newRole = this.roleRepo.create({ name: "ROLE_USER" });
@@ -127,7 +133,7 @@ export class UsersResolver {
     }
 
     // Generate token for ValidationAccount
-    const token = jwt.sign({ user: "newUser" }, `${email}`, {
+    const token = jwt.sign({ user: "new User" }, `${email}`, {
       expiresIn: "6000s",
     });
 
@@ -141,21 +147,19 @@ export class UsersResolver {
     });
     await newUser.save();
     sendTokenNewUser(token, newUser);
-
     return newUser;
   }
 
   // Existing user
-  @Mutation(() => String, { nullable: true })
+  @Mutation(() => ResponseType, { nullable: true })
   async signin(
-    // @Arg("pseudo") pseudo: string,
     @Arg("email") email: string,
     @Arg("password") password: string,
     @Arg("validAccountToken") validAccountToken: string,
     @Ctx() context: { token: string; userAgent: string; user: User | null }
-  ): Promise<string | any> {
+  ): Promise<ResponseType | null> {
     const user = await this.userRepo.findOne({ email });
-    let token = "";
+    let authorizationToken = "";
     const ua = context.userAgent;
     const isMobile =
       /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
@@ -163,23 +167,42 @@ export class UsersResolver {
       );
     if (user) {
       if (user.validAccountToken !== "") {
-        // Compte pas encore valide
+        // account not validated yet
+
         try {
-          const isTokenValid = jwt.verify(validAccountToken, `${user.email}`);
-          return null; // va voir tes mails
+          //get payload used for signup
+          const tokenPayload = jwt.verify(
+            user.validAccountToken,
+            `${user.email}`
+          );
+          if (tokenPayload) {
+            console.log("2", tokenPayload);
+            return {
+              errorMessage: "validation_to_be_done",
+            };
+          }
         } catch (error) {
-          return null; // envoie new token, va checker tes mails ...
+          // only reason is expiration
+          console.log("1", error);
+          sendRefreshToken;
+          return {
+            errorMessage: "validation_token_expired",
+          };
         }
       } else {
         // compte ok, generation de token d'authentification
         //check password, if pwd valid /database then generate & return token
         if (await argon2.verify(user.password, password)) {
-          token = jwt.sign({ userId: user.id }, "supersecret", {
+          authorizationToken = jwt.sign({ userId: user.id }, "supersecret", {
             expiresIn: !isMobile ? "86400s" : "31000000",
           });
-          return token;
+          return {
+            authorizationToken,
+          };
         } else {
-          return null;
+          return {
+            errorMessage: "server_error",
+          };
         }
       }
     }
