@@ -13,6 +13,7 @@ import {
 import { Status } from "./Status";
 import { User } from "./User";
 import { Task } from "./Task";
+import { Notification } from './Notification';
 
 @ObjectType() //graphql
 @Entity() //ORM
@@ -54,6 +55,11 @@ export class Project extends BaseEntity {
   @ManyToMany((type) => User, (user) => user.projects, { eager: true })
   @JoinTable()
   managers!: User[];
+
+  /*//One project has several notifications
+  @Field(() => [Notification], { nullable: true })
+  @OneToMany((type) => Notification, (notification) => notification.project) // an project has one status
+  notifications?: Notification[];*/
 }
 
 @InputType()
@@ -78,3 +84,5 @@ export class ProjectInput {
   @Column({ nullable: true })
   estimatedTime?: number;
 }
+
+// Push notification => Expo push notification 

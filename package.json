@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "docker": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker-clear": "docker-compose -f docker-compose.dev.yml up --build -V",
     "start": "node ./dist/index.ts",
     "dev": "nodemon ./src/index.ts",
     "build": "tsc -p .",
@@ -43,7 +44,7 @@
     "sqlite3": "^5.0.2",
     "ts-node": "^10.4.0",
     "type-graphql": "^1.1.1",
-    "typeorm": "^0.2.41",
+    "typeorm": "^0.2.45",
     "typescript": "^4.5.2"
   },
   "devDependencies": {

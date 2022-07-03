@@ -12,22 +12,55 @@ export class NotificationsResolver {
   @Authorized()
   @Query(() => [Notification])
   async getNotifications(): Promise<Notification[]> {
-    return await this.notificationRepo
-      .createQueryBuilder("notification")
-      .limit(10)
-      .getMany();
+    return await this.notificationRepo.find({ relations: ["user"] })
   }
 
-  // get one notification
+  // Get notif of a user
+  @Authorized()
+  @Query(() => [Notification])
+  async getNotificationsOfOneUser(
+    @Ctx() context : {user : User} // @Ctx décorateur 
+  ): Promise<Notification[]> {
+    return await this.notificationRepo.find({
+      where: {
+          user: { id: context.user.id},
+          read: false
+      },
+      relations: ["user"],
+    }); 
+  }
+
+   // Mettre une notification en => LUE
+   @Authorized()
+   @Mutation(() => Notification)
+   async readedNotification(
+     @Arg("id", () => ID) id: number
+   ): Promise<Notification | undefined> {
+      const notification = await this.notificationRepo.findOne(id);
+
+      if(!notification){
+        // Throw Error => Pas de notifications trouvé à cet ID
+      }
+
+      const date = new Date();
+
+      notification.read_at = date.toDateString();
+      notification.read = true;
+      notification.save();
+
+      return notification;
+   }
+
+  /*// get one notification
   @Authorized()
   @Query(() => Notification)
   async getNotification(
     @Arg("id", () => ID) id: number
   ): Promise<Notification | undefined> {
     return await this.notificationRepo.findOne(id);
-  }
+  }*/
 
-  // create notification
+  /*// create notification
   @Authorized()
   @Mutation(() => Notification)
   async addNotification(
@@ -60,5 +93,5 @@ export class NotificationsResolver {
       return true;
     }
     return false;
-  }
+  }*/
 }

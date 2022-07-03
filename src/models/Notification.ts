@@ -5,9 +5,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
+  ManyToMany, 
+  JoinTable
 } from "typeorm";
 import { Comment } from "./Comment";
 import { User } from "./User";
+import { Project } from './Project';
 
 @ObjectType()
 @Entity()
@@ -20,13 +23,28 @@ export class Notification extends BaseEntity {
   @Column()
   name!: string;
 
+  @Field()
+  @Column()
+  read!: boolean;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  created_at?: String;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  read_at?: String;
+
+  // Une notif pour une personne / une pers pour plrs notifs => OneToMany
   @Field(() => User)
   @ManyToOne((type) => User, (user) => user.notifications)
-  user!: User;
+  users!: User;
 
-  @Field(() => Comment)
-  @ManyToOne((type) => Comment, (comment) => comment.notifications)
-  comment!: Comment;
+  /*// Une notification est liée à UN project
+  @Field(() => Project)
+  @ManyToOne((type) => Project, (project) => project.notifications)
+  project!: Project;*/
+
 }
 
 @InputType()
@@ -35,3 +53,5 @@ export class NotificationInput {
   @Column()
   name!: string;
 }
+
+// Système de LOG 
