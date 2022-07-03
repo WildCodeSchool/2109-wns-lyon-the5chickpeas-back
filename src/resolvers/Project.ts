@@ -49,25 +49,34 @@ export class ProjectsResolver {
     }
   ): Promise<Project> {
     
+    // Creation du projet
     const newProject = this.projectRepo.create(project);
+
     const currentUser: User | null = context.user;
+
     newProject.managers = [currentUser as User];
     const status = await this.statusRepo.findOne({ code: 0 });
     newProject.status = status as Status;
+
+    // Persist du projet
     await newProject.save();
 
     // Add a notification => Chercher les membres et faire une boucle FOR sur eux
 
     // Creation de la notification
     const newNotification = this.notificationRepo.create();
+    const date = new Date();
     
     // Affectation des valeurs
     newNotification.name = '';
-    newNotification.unread = false;
-    newNotification.created_at = new Date();
-    newNotification.users = currentUser as User;
+    newNotification.read = false;
+    newNotification.created_at = date.toDateString();
+    newNotification.user = currentUser as User;
 
-    console.log(newProject, newNotification);return;
+    // Persist de la notification
+    await newNotification.save();
+
+    //console.log(newNotification);
 
     return newProject;
   }

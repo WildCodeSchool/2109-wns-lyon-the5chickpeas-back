@@ -197,7 +197,7 @@ export class UsersResolver {
             expiresIn: !isMobile ? "86400s" : "31000000",
           });
           return {
-            authorizationToken,
+            authorizationToken
           };
         } else {
           return {

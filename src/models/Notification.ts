@@ -25,20 +25,20 @@ export class Notification extends BaseEntity {
 
   @Field()
   @Column()
-  unread!: boolean;
+  read!: boolean;
 
-  @Field()
-  @Column({ type: 'date' })
-  created_at!: Date;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  created_at?: String;
 
-  @Field()
-  @Column({ type: 'date' })
-  read_at!: Date;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  read_at?: String;
 
   // Une notif pour une personne / une pers pour plrs notifs => OneToMany
   @Field(() => User)
   @ManyToOne((type) => User, (user) => user.notifications)
-  users!: User;
+  user!: User;
 
 }
 

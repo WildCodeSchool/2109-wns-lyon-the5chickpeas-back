@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   OneToMany,
+  ManyToOne
 } from "typeorm";
 import { Comment } from "./Comment";
 import { Role } from "./Role";
@@ -57,7 +58,7 @@ export class User extends BaseEntity {
 
   // X notifs par User => Une notif / pers ManyToOne => pers / plrs notifs OneToMany
   @Field(() => [Notification])
-  @OneToMany((type) => Notification, (notification) => notification.users)
+  @OneToMany((type) => Notification, (notification) => notification.user)
   notifications!: Notification[];
 }
 
@@ -75,3 +76,5 @@ export class UserInput {
   @Field({ nullable: true })
   validAccountToken?: string;
 }
+
+
