@@ -76,6 +76,10 @@ export class ProjectInput {
   @Column()
   description!: string;
 
+  @Field()
+  @Column()
+  status_id!: number;
+
   @Field({ nullable: true })
   @Column({ nullable: true })
   dueDate?: string;
