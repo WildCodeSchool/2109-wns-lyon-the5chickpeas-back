@@ -38,7 +38,12 @@ export class Notification extends BaseEntity {
   // Une notif pour une personne / une pers pour plrs notifs => OneToMany
   @Field(() => User)
   @ManyToOne((type) => User, (user) => user.notifications)
-  user!: User;
+  users!: User;
+
+  /*// Une notification est liée à UN project
+  @Field(() => Project)
+  @ManyToOne((type) => Project, (project) => project.notifications)
+  project!: Project;*/
 
 }
 
