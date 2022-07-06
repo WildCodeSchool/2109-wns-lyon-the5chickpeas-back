@@ -33,7 +33,7 @@ export class ProjectsResolver {
   async getProject(
     @Arg("id", () => ID) id: number
   ): Promise<Project | undefined> {
-    return await this.projectRepo.findOne(id);
+    return await this.projectRepo.findOne(id, { relations: ["status"] });
   }
 
   // create project
@@ -55,7 +55,7 @@ export class ProjectsResolver {
     const currentUser: User | null = context.user;
 
     newProject.managers = [currentUser as User];
-    const status = await this.statusRepo.findOne({ code: 0 });
+    const status = await this.statusRepo.findOne({ id: project.status_id });
     newProject.status = status as Status;
 
     // Persist du projet
@@ -89,11 +89,10 @@ export class ProjectsResolver {
     @Arg("name") name: string,
     @Arg("description") description: string,
     @Arg("estimatedTime") estimatedTime: number,
-    @Arg("statusId") statusId: number,
+    @Arg("status") status: string,
     @Arg("managersIds", () => [Number]) managersIds: number
   ): Promise<Project | null> {
     const project = await this.projectRepo.findOne(id);
-    const status = await this.statusRepo.findOne(statusId);
     if (project) {
       Object.assign(project, {
         name,

@@ -18,7 +18,7 @@ export class Status extends BaseEntity {
 
   @Field()
   @Column()
-  code!: number;
+  name!: string;
 
   //One status can have several projects
   @Field(() => [Project], { nullable: true })
@@ -30,10 +30,10 @@ export class Status extends BaseEntity {
   @OneToMany((type) => Task, (task) => task.status) // an project has one status
   tasks?: Task[];
 }
-
+//no need
 @InputType()
 export class StatusInput {
   @Field()
   @Column()
-  code!: number;
+  name!: string;
 }
